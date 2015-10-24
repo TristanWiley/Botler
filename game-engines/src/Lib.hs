@@ -152,6 +152,7 @@ tronBikeGame size@(width, height) = Game {
 data TTTMove = A0 | A1 | A2|
                B0 | B1 | B2|
                C0 | C1 | C2 deriving (Eq, Show)
+
 {-data TTTState = A0taken | A1taken | A2taken |
                 B0taken | B1taken | B3taken |
                 C0taken | C1taken | C3taken deriving Show
