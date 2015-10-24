@@ -150,22 +150,17 @@ tronBikeGame size@(width, height) = Game {
     }
 
 -- 2-player Tic-Tac-Toe
+{-
 data TTTMove = O | X deriving (Eq, Show, Enum, Ord)
 type Position = (Char, Int)
 data BoardMove = BoardMove
-                { bMove :: Maybe Move, bPos :: Position } 
+                { bMove :: TTTMove, bPos :: Position } 
                 deriving (Eq, Show)
 type Board = [BoardMove]
 type InvalidMove = String
 
 bsize = 3
-coord = [('A'..),('1',..)]
-
-empty :: Int -> Board
-empty size = do
-    x <- take size (fst coord)
-    y <- take size (snd coord)
-return boardMove Nothing(x,y)
+coord = (['A'..],['1'..])
 
 move :: BoardMove -> Board -> Either InvalidMove Board
 move (BoardMove _ (c,r))[]=
@@ -193,14 +188,15 @@ win (BoardMove m (c,r)) b = row || col || diag' cb || diag' (reverse cb)
           cb = chop bsize b
 
 draw :: BoardMove -> Board -> Bool
-draw bm b = not (any (isNothing . bMOve) b)
+draw bm b = not (any (isNothing . bMove) b)
+
           && not (win bm b)
 
 printBoard :: Board -> String
 printBoard b = intercalate "\n" $
                 map (\row-> [(fst. bPos) (row !! 0)] ++ ") |" ++
                     (intercalate " | "
-                        $ map (\bm-> maybe " " show $ bMove bm) row)
+                        $ map (\bm-> show $ bMove bm) row)
                     ++ " |")
                 (chop bsize b)
 
@@ -211,22 +207,23 @@ chop n xs = take n xs : chop n (drop n xs)
 diag :: [[a]] -> [a]
 diag xss = [xss !! n !! n | n <- [0 .. length xss -1]]
 
-main = do
+mainprime = do
     putStrLn "Starting new game. . ."
     putStrLn "Type 'quit' to exit game"
-    let newBoard = empty bsize
-        in do (putStrLn .  (\s->"\n"++s++"\n") . printBoard) newBoard
+    let newBoard = []
+        in do
+            (putStrLn .  (\s->"\n"++s++"\n") . printBoard) newBoard
             gameloop Nothing newBoard
 
 gameloop prevMove board = do
-    let currPlayer = maybe  (\BoardMove mv _) ->
+    let currPlayer = (\(BoardMove mv _) ->
                                 case mv of
-                                    Just X -> O
-                                    Just O -> X) prevMOve
-    putSTr $ "Player '" ++ (show currPlayer) ++ "': "
+                                     X -> O
+                                     O -> X) prevMove
+    putStr $ "Player '" ++ (show currPlayer) ++ "': "
     hFlush stdout
     playerMove <- getLine
-    case (playerMove, (map toUpper playerMove) 'elem' allCoord) of
+    case (playerMove, (map toUpper playerMove) `elem` allCoord) of
         ("quit", _) ->
             putStrLn "K. BYE."
         (_, False ) -> do
@@ -234,23 +231,22 @@ gameloop prevMove board = do
             gameloop prevMove board
         otherwise   -> do
             let pos = (toUpper $ playerMove !! 0,
-                       read [(playerove !! 1)] :: Int)
+                       read [(playerMove !! 1)] :: Int)
                 currMove = BoardMove (Just currPlayer) pos
                 currBoard = move currMove board
             either putStrLn (putStrLn . (\s->"\n"++s++"\n") . printBoard) currBoard
             case currBoard of
-                Right r -> if win currMove r
-                            then do putStrLn $ "Player '"
-                                                ++ (show currPlayer) ++ "' wins!"
+                Right r -> if win currMove r then do 
+                                    putStrLn $ "Player '" ++ (show currPlayer) ++ "' wins!"
                                     main
-                            else if draw currMove r
-                                    then do putStrLn $ "No one wins, no one losses!"
-                                        main
+                            else if draw currMove r then do 
+                                putStrLn $ "No one wins, no one losses!"
+                                main
                             else gameloop (Just currMove) r
                 Left err -> gameloop prevMove board
-    where allCoord = [[s] ++ show y | x <- take bsize (fst coord),
+    where allCoord = [[x] ++ show y | x <- take bsize (fst coord),
                                       y <- take bsize (snd coord)]
-
+-}
 
 
 {-data TTTState = A0taken | A1taken | A2taken|
