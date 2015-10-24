@@ -14,6 +14,7 @@ class Player:
 
     def take_turn(self, world_state):
         exec self.executable # oh absolute horror
+        
 
     def update_stats():
         with open('') as f:
