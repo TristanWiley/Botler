@@ -1,6 +1,6 @@
 #this is a rock paper scissors class
 
-
+import sys
 class RPS(object):
 	'''
 	This is the rock paper scissors class that will control the game
@@ -111,12 +111,13 @@ class RPS(object):
 		import player
 		return player.response(self.data)
 		'''
-                from AutoArena import player_programs
+		print "hello"
+		a =  sys.stdin.readlines()
+		print "whatever"
+                # import importlib
+                # f = importlib.import_module("AutoArena.player_programs."+player[:-3])
 
-                import importlib
-                f = importlib.import_module("AutoArena.player_programs."+player[:-3])
-
-                return f.play_turn(self.data)
+                # return f.play_turn(self.data)
 
 	def is_valid_choice(self, choice):
 	    '''

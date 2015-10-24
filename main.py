@@ -24,6 +24,7 @@ def get_stats(name):
 
 @socketio.on('connect')
 def handle_connect(message):
+    pass
     # pipe data from the engine to the browser
     # x should be an svg or something
     # facilitator.on_data(lambda x: emit('frame', {'frame': x}))
@@ -37,3 +38,6 @@ def script_upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect('/')
+
+if __name__ == '__main__':
+    socketio.run(app)
