@@ -16,6 +16,7 @@ import Data.Char
 import Data.Conduit
 import Data.Monoid
 import System.IO
+import qualified Data.Array as A
 import qualified Data.Aeson.TH as AT
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
@@ -103,6 +104,33 @@ rockPaperScissors = Game {
 
 deriveAllJSONs [''RPSMove, ''RPSState]
 
+-- 2-player Tron
+data TronMove = KeepGoing | TurnCW | TurnCCW
+data TronDirection = North | East | South | West deriving (Enum, Show)
+type TronCoord = (Int, Int)
+type TronPlayer = (TronCoord, TronDirection)
+type TronGrid = A.Array TronCoord (Maybe PlayerId)
+data TronState = TS TronPlayer TronPlayer TronGrid
+
+applyTurn :: TronMove -> TronDirection -> TronDirection
+applyTurn dir x = toEnum ((fromEnum x + f dir) `mod` 4) where
+        f KeepGoing = 0; f TurnCW = 1; f TurnCCW = -1
+
+getDelta North = ( 0,-1)
+getDelta South = ( 0, 1)
+getDelta West  = (-1, 0)
+getDelta East  = ( 1, 0)
+
+updatePosition (x,y) dir = let (dx, dy) = getDelta dir in (x+dx, y+dy)
+
+{-
+tronBikeGame :: TronCoord -> Game TronState (TronMove, TronMove)
+tronBikeGame size@(width, height) = Game {
+    _blankState = TS ((0,0), South) (size, North) (listArray ((0,0),size) (repeat Nothing)),
+    _checkStatus = tronCheckStatus,
+    _makeMove = \(m1,m2) (TS p1
+    }
+-}
 
 -- 2-player Tic-Tac-Toe
 data TTTMove = A0 | A1 | A2|
