@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
@@ -13,7 +14,9 @@ import Data.Aeson
 import Data.Aeson.Lens
 import Data.Char
 import Data.Conduit
+import Data.Monoid
 import System.IO
+import qualified Data.Aeson.TH as AT
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Conduit.Binary as CB
@@ -21,10 +24,12 @@ import qualified Data.Conduit.List as CL
 import qualified Data.Text as T
 
 -- Definition of a "Game"
+#define deriveAllJSONs ((concat <$>) . mapM (AT.deriveJSON (AT.defaultOptions { AT.allNullaryToStringTag = False })))
 
 newtype PlayerId = PID Int deriving (Eq, Num, Show)
 
 data GameStatus = CurrentTurn PlayerId | Drawn | PlayerWin PlayerId deriving Show
+deriveAllJSONs [''PlayerId, ''GameStatus]
 
 data Game state move = Game {
     _blankState :: state,
@@ -49,13 +54,20 @@ runByteStringConduit i o c = runConduit $
     c =$=
     CB.sinkHandle o
 
-gameLoop :: Game s m -> ConduitM B.ByteString B.ByteString IO ()
+gameLoop :: (ToJSON s, ToJSON m, FromJSON s, FromJSON m) => Game s m -> ConduitM B.ByteString B.ByteString IO ()
 gameLoop g = loop (g ^. blankState) where
+    emit = yield . L.toStrict . (<>"\n") . encode
     loop state = do
-        liftA2 (>>=) await (pure (decode . L.fromStrict)) `bindJust` \(jsonLine :: Value) -> do
-            flip (maybe (loop state)) (jsonLine ^? nth 0 . _String) $ \functionName -> do
-                liftIO $ print functionName -- TODO: switch on function goes here
-        loop state
+        liftA2 (>>=) await (pure (decode . L.fromStrict)) >>= \case
+            Just (jsonLine :: Value) -> do
+                pure (jsonLine ^? nth 0 . _String) `bindJust` \case
+                    "getState" -> emit state >> loop state
+                    "checkStatus" -> emit ((g ^. checkStatus) state) >> loop state
+                    "makeMove" -> pure (jsonLine ^? nth 1 . _JSON) `bindJust` \(move :: m) ->
+                        pure ((g ^. makeMove) move state) >>= maybe (loop state) loop
+                    "validMoves" -> emit ((g ^. validMoves) state) >> loop state
+                    _ -> loop state
+            Nothing -> loop state
 
 main = runByteStringConduit stdin stdout (gameLoop rockPaperScissors)
 
@@ -88,6 +100,9 @@ rockPaperScissors = Game {
         TwoProvided _ _ -> []
         _ -> [Rock, Paper, Scissors]
     }
+
+deriveAllJSONs [''RPSMove, ''RPSState]
+
 
 -- JSON hello world
 
