@@ -15,6 +15,7 @@ def index():
 
 @app.route('/api/stats/<name>')
 def get_stats(name):
+    flask.send_file(name.json)
     #
     # TODO: Fill this out. Return JSON! 
     #
@@ -28,7 +29,7 @@ def handle_connect(message):
     # pipe data from the engine to the browser
     # x should be an svg or something
     # facilitator.on_data(lambda x: emit('frame', {'frame': x}))
-
+    pass
 
 @app.route('/script_upload', methods=['GET', 'POST'])
 def script_upload():
