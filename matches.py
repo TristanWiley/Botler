@@ -2,13 +2,17 @@ from multiprocessing import Pool
 import os
 from os import path, listdir
 import itertools
-import engine_pipe as engine
+from engine_pipe import Engine
 import re
 import json
 import sys
 
+# todo: get rid of exec, do this with sockets
+
 SCRIPT_PATH = 'player_scripts'
 DATA_PATH = 'player_data'
+
+# this is the horrible runtime code version
 
 
 class Player:
@@ -38,12 +42,29 @@ class Player:
                 print "no stats file for user #", self.id
                 print "creating one..."
                 current_stats = {}
-            current_stats['wins'] = current_stats.get('wins', 0) + 1
+
+            # should do something else/more here
+            current_stats['wins'] = self.wins
+            current_stats['losses'] = self.losses
+            current_stats['ties'] = self.ties
+
             print current_stats
             new_stats = json.dumps(current_stats, sort_keys=True,
                                    indent=4, separators=(',', ': '))
             f.truncate(0)
             f.write(new_stats)
+
+    def win(self):
+        self.wins = self.wins + 1
+        self.update_stats()
+
+    def lose(self):
+        self.losses = self.losses + 1
+        self.update_stats()
+
+    def tie(self):
+        self.ties = self.ties + 1
+        self.update_stats()
 
 
 def create_sandbox(path, filename):
@@ -55,10 +76,15 @@ def create_sandbox(path, filename):
 
 
 def run_sim(player_programs):
+
+    game_type = re.search('([a-z]*)', player_programs[0]).group(0)  # ugh
+
     n = 10
     player1 = create_sandbox(SCRIPT_PATH, player_programs[0])
     player2 = create_sandbox(SCRIPT_PATH, player_programs[1])
     cycleit = itertools.cycle([player1, player2])
+    engine = Engine(game_type)  # rps
+
     # stats_obj = get_player_stats(player1)
     for player in [next(cycleit) for i in range(n)]:
         world_state = engine.get_world_state()
