@@ -6,5 +6,5 @@ Contributors:
 - Avi Weinstock
 - Ellie Jung
 - Elliott Weintraub
-- Jordan Ephron
+- Jordan Ephron - Backend n' stuff
 - Tristan Wiley - Android Developer
