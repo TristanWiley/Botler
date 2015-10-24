@@ -10,7 +10,7 @@ class Engine:
         self.program = program
 
         print 'One line at a time:'
-        self.proc = subprocess.Popen('python repeater.py', 
+        self.proc = subprocess.Popen('game-engines/build_and_run.sh', 
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
                                 )
@@ -23,7 +23,7 @@ class Engine:
         return json.decode(output.rstrip())
 
 
-    def update(self, data_string):  # see spec?
-        # pipe.send(data_string)
+    def update(self, data_string): # see spec?
+        # pipe.send(data_string) 
         self.proc.stdin.write('%s\n' % data_string)
 
