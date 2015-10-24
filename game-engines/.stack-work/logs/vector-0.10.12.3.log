@@ -1,0 +1,13 @@
+Configuring vector-0.10.12.3...
+Building vector-0.10.12.3...
+Preprocessing library vector-0.10.12.3...
+[ 1 of 19] Compiling Data.Vector.Storable.Internal ( Data/Vector/Storable/Internal.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.4.0/build/Data/Vector/Storable/Internal.o )
+[ 2 of 19] Compiling Data.Vector.Fusion.Util ( Data/Vector/Fusion/Util.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.4.0/build/Data/Vector/Fusion/Util.o )
+[ 3 of 19] Compiling Data.Vector.Fusion.Stream.Size ( Data/Vector/Fusion/Stream/Size.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.4.0/build/Data/Vector/Fusion/Stream/Size.o )
+
+Data/Vector/Fusion/Stream/Size.hs:25:10: Warning:
+    No explicit implementation for
+      ‘*’, ‘abs’, and ‘signum’
+    In the instance declaration for ‘Num Size’
+[ 4 of 19] Compiling Data.Vector.Internal.Check ( Data/Vector/Internal/Check.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.4.0/build/Data/Vector/Internal/Check.o )
+[ 5 of 19] Compiling Data.Vector.Fusion.Stream.Monadic ( Data/Vector/Fusion/Stream/Monadic.hs, .stack-work/dist/x86_64-osx/Cabal-1.22.4.0/build/Data/Vector/Fusion/Stream/Monadic.o )
