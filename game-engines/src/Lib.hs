@@ -1,3 +1,4 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -10,7 +11,9 @@ import qualified Data.Text as T
 
 -- Definition of a "Game"
 
-data GameStatus = StillGoing | Drawn | PlayerWinId Int
+newtype PlayerId = PID Int deriving (Eq, Num, Show)
+
+data GameStatus = CurrentTurn PlayerId | Drawn | PlayerWin PlayerId deriving Show
 
 data Game state move = Game {
     _blankState :: state,
@@ -36,18 +39,20 @@ rockPaperScissors :: Game RPSState RPSMove
 rockPaperScissors = Game {
     _blankState = ZeroProvided,
     _checkStatus = \case
-        ZeroProvided -> StillGoing
-        OneProvided _ -> StillGoing
+        ZeroProvided -> CurrentTurn 0
+        OneProvided _ -> CurrentTurn 1
         TwoProvided l r -> case l `rpsCompare` r of
-            LT -> PlayerWinId 1
+            LT -> PlayerWin 1
             EQ -> Drawn
-            GT -> PlayerWinId 0,
+            GT -> PlayerWin 0,
     _makeMove = \m -> \case
         ZeroProvided -> Just $ OneProvided m
         OneProvided m1 -> Just $ TwoProvided m1 m
         TwoProvided _ _ -> Nothing,
     _renderState = T.pack . show, -- TODO: SVG
-    _validMoves = const [Rock, Paper, Scissors]
+    _validMoves = \case
+        TwoProvided _ _ -> []
+        _ -> [Rock, Paper, Scissors]
     }
 
 -- JSON hello world
