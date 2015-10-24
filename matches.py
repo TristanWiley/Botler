@@ -7,20 +7,27 @@ import pickle
 SCRIPT_PATH = 'player_scripts'
 DATA_PATH = 'player_data'
 
+
 class Player:
+
     def __init__(self, script, id):
-        self.executable = script 
-        self.id = id 
+        self.executable = compile(script)
+        self.id = id
+        self.wins = 0
+        self.losses = 0
+        self.ties = 0
+        update_stats()
 
     def take_turn(self, world_state):
-        exec self.executable # oh absolute horror
-        
+        exec self.executable  # oh absolute horror
+        # I hope context works the way I'd expect here
+        return main(world_state)
 
-    def update_stats():
-        with open('') as f:
+    def update_stats(self):
+        with open(os.path.join(DATA_PATH, str(id) + '.json')) as f:
             current_stats = json.loads()
             json.dumps({'4': 5, '6': 7}, sort_keys=True,
-                       indent=4, separators=(',', ': ')
+                       indent=4, separators=(',', ': '))
 
 
 def create_sandbox(filename):

@@ -1,6 +1,10 @@
 from flask import Flask, request, session, render_template, jsonify, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
+from flask.ext.socketio import SocketIO, send, emit
+
 app = Flask(__name__, static_url_path='/static')
+socketio = SocketIO(app)
+app.config['SECRET_KEY'] = 'secret!'
 
 app.config['UPLOAD_FOLDER'] = 'player_data'
 
@@ -8,6 +12,12 @@ app.config['UPLOAD_FOLDER'] = 'player_data'
 @app.route('/')
 def index():
     pass
+
+@socketio.on('connect')
+def handle_connect(message):
+    # pipe data from the engine to the browser
+    # x should be an svg or something
+    # facilitator.on_data(lambda x: emit('frame', {'frame': x}))
 
 
 @app.route('/script_upload', methods=['GET', 'POST'])
