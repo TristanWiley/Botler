@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title> Botler </title>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+
+    <link rel="stylesheet" href="../../templates/new_site/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../../templates/new_site/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="../../templates/new_site/css/animate.min.css" type="text/css">
+
+    <!-- CSS STUFF AND THINGS-->
+    <link rel="stylesheet" href="../../templates/new_site/css/creative.css" type="text/css">
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js">
+	 $(function() {
+       $("#upload_button1").click(function() { 
+           $("#file_upload1").click();
+       });
+   });
+   $(function() {
+       $("#upload_button2").click(function() { 
+           $("#file_upload2").click();
+       });
+   });
+		</script>
+	>
+</head>
+
+<body id="page-top">
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Botler Home</a>
+            </div>  
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+       <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>Welcome to Botler!  <p style = "font-weight: 500; color: #ffffff ; font-size: 48px; ">     ( ͡° ͜ʖ ͡°) </p> </h1>
+                <hr>
+                
+                <p style = "font-size: 25px ; font-weight: 300 ; font: sans-serif ; color: #ffffff; " > Learn how to code by making a game playing bot! </p>
+                <a href="#abouttbhlol" class="btn btn-primary btn-xl page-scroll">About</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href= "#playdemo" class= "btn btn-primary btn-xl page-scroll"> Play </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href= "#uploadtbhlol" class= "btn btn-primary btn-xl page-scroll"> Upload Files </a>
+            </div>
+        </div>
+    </header>
+
+   <section class="bg-primary" id = "abouttbhlol">
+        <div class="container" >
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">About the Game</h2>
+                    <hr class="light">
+                    <p class="text-faded"> Botler is an educational bot gaming platform! Simply upload your code to play one of our games and send it off to battle. See how you well your program performs against other players programs. Learn, Create, Play!</p>
+                    <a href="#playtbhlol" class="btn btn-primary btn-xl page-scroll" style="background-color:blue">Play Now!</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Learn</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-book wow bounceIn text-primary"></i>
+                        <h3>Learn</h3>
+                        <p class="text-muted">Check out our <a href="./docs.html">documentation</a> on how to interact with our game engines!</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-area-chart wow bounceIn text-primary"></i>
+
+                        <h3>Check Stats</h3>
+                        <p class="text-muted">Lookup the stats of a program playing now!</p>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Category was here tbh -->
+	<section id="portfolio" class="bg-dark"> 
+      	<div>
+            <h2 class="section-heading" style = "color:#FFFFFF ; font-weight:300 ; text-align: center; font-size:36px; "> Botler Live Stats </h2>
+            <canvas id="buyers" width="600" height="400"></canvas>
+    		
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">About Us</h2>
+                    <hr class="primary">
+                    <p>This project was made with love from Alexander Comerford, Avi Weinstock, Elliot Weintraub, Jordan Ephron, and Tristan Wiley </p>
+                </div>
+                <div class="col-lg-12 text-center">
+                    <i class="fa fa-envelope-o fa-3x wow bounceIn" data-wow-delay=".1s"></i>
+                    <p><a href="mailto:your-email@your-domain.com">feedback@startbootstrap.com</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.fittext.js"></script>
+    <script src="js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/creative.js"></script>
+
+</body>
+
+</html>

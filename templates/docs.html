@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title> Botler </title>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+
+    <link rel="stylesheet" href="../../templates/new_site/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../../templates/new_site/font-awesome/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="../../templates/new_site/css/animate.min.css" type="text/css">
+
+    <!-- CSS STUFF AND THINGS-->
+    <link rel="stylesheet" href="../../templates/new_site/css/creative.css" type="text/css">
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js">
+	 $(function() {
+       $("#upload_button1").click(function() { 
+           $("#file_upload1").click();
+       });
+   });
+   $(function() {
+       $("#upload_button2").click(function() { 
+           $("#file_upload2").click();
+       });
+   });
+		</script>
+	>
+
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+
+<body id="page-top">
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="./index.html">Botler Home</a>
+            </div>  
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+   <section class="bg-primary" id = "abouttbhlol">
+        <div class="container" >
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Documentation</h2>
+                    <hr class="light">
+                    <p class="text-faded"> Welcome to the Botler Documentation!</p>
+                    <br><br>
+                    <p class="text-faded"> In these docs you will learn about the games we have available and how your program will interact in the gaming arena</p>
+
+                    <br><br>
+
+                    <h3 class="section-heading">Games</h3>
+                    <p class="text-faded"> Botler currently supportes two games for a programmer to code for. These two games are Rock,Paper,Scissors, and LightBike. (We plan to do more in the future) </p>
+
+                    <br><br><br><br>
+
+
+                    <hr class="light">
+
+                    <i class="fa fa-4x fa-scissors wow bounceIn text-primary" style="color:#FFFFFF"></i>
+
+                    <h3 class="section-heading">Rock, Paper, Scissors</h3>
+                    <p class="text-faded"> For bots designed to play <a href="https://en.wikipedia.org/wiki/Rock-paper-scissors" style="color:#FFFFFF">Rock Paper Scissors</a>, the standard data each bot will except will be in the code block below in the form of a python <a href="https://docs.python.org/2/tutorial/datastructures.html#dictionaries" style="color:#FFFFFF">dictionary</a> </p>
+                    <br>
+
+                    <p class="text-faded "> Sample:</p>
+                    <pre class="prettyprint code_formatted" style="width:260px;margin-left:33%">
+    {
+    "valid_moves":["r","p","s"]
+    "history":[0,1,1,0,2,1,2,2]
+    }
+                    </pre>
+
+                    <br>
+                    <div class="row">
+                        <pre class="prettyprint code_formatted_tiny">"valid_moves"</pre>
+                        <p class="text-faded input_description"> will contain a list of the valid return values the bots can return</p>
+                    </div>
+
+                    <div class="container-fluid">
+                        <pre class="prettyprint code_formatted_tiny">"history"</pre>
+                        <p class="text-faded input_description"> will contain a list of the history of wins and ties</p>
+                        <br>
+
+                        <p class="text-faded "> History Legend:</p>
+                        <pre class="prettyprint code_formatted" style="width: 180px;margin-left:38%">
+    0 = Tie
+    1 = Player 1 win
+    2 = Player 2 win
+                        </pre>
+
+                        <p class="text-faded "> Valid Moves Legend:</p>
+                        <pre class="prettyprint code_formatted" style="width: 180px;margin-left:38%">
+    "r" = Rock
+    "p" = Paper
+    "s" = Scissors
+                        </pre>
+                    </div>
+
+                    <br><br><br><br>
+
+                    <hr class="light">
+
+                    <i class="fa fa-4x fa-motorcycle wow bounceIn text-primary" style="color:#FFFFFF"></i>
+
+                    <h3 class="section-heading">Light Cycle</h3>
+                    <p class="text-faded"> For bots designed to play <a href="http://tron.wikia.com/wiki/TRON_(arcade_game)" style="color:#FFFFFF">Light Cycle</a>, the standard data each bot will except will be in the code block below in the form of a python <a href="https://docs.python.org/2/tutorial/datastructures.html#dictionaries" style="color:#FFFFFF">dictionary</a> </p>
+                    <br>
+
+                    <p class="text-faded "> Sample:</p>
+                    <pre class="prettyprint code_formatted" style="width:260px;margin-left:33%">
+    {
+    "valid_moves":["l","r","s"],
+    "board_size":{
+        "x":10,
+        "y":10
+    },
+    "board":[
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,3,3,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,2,4,4,0],
+        [0,0,0,0,0,0,0,0,0,0]
+    ],
+    "current_direction":"l",
+    "score":{
+        "p1_wins":500,
+        "p2_wins":423,
+        "games_left":324
+    }
+    }
+                    </pre>
+                    <br><br><br>
+                    <div class="row">
+                        <div class="col-xs-16 col-sm-4">
+                            <p class="text-faded "> Valid Moves Legend:</p>
+                            <pre class="prettyprint code_formatted" style="width: 180px;margin-left:9%;">
+    "l" = Left
+    "r" = Right
+    "s" = Straight
+                            </pre>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <p class="text-faded "> Board Legend:</p>
+                            <pre class="prettyprint code_formatted" style="width: 180px;margin-left:9%">
+    0 = Empty Space
+    1 = Player 1
+    2 = Player 2
+    3 = Player 1 trail
+    4 = Player 2 trail
+                            </pre>
+                        </div>
+                        <div class="col-xs-8 col-sm-4">
+                            <p class="text-faded "> Current Direction Legend:</p>
+                            <pre class="prettyprint code_formatted" style="width: 180px;margin-left:9%">
+    "l" = Left
+    "r" = Right
+    "u" = Up
+    "d" = Down
+                            </pre>
+                        </div>
+                    <div>
+
+                    <br><br><br><br><br>
+                    <br><br><br><br><br>
+                    <br><br><br><br><br>
+                    <h3 class="section-heading">Quickstart</h3>
+                    <p class="text-faded"> Botler utilizes python scripts as the comptetitive bots in the arena! </p><br>
+                    <pre class="prettyprint code_formatted">
+    #this is my awesome Rock,Paper Scissors program
+    from random import choice
+
+    def main(data):
+        return choice(data['valid_moves'])
+                    </pre>
+ 
+                    <p class="text-faded"> Can't think of a good place to start? Use one of our templates!! </p><br>
+
+                    <a href="#abouttbhlol" class="btn btn-primary btn-xl page-scroll" style="background-color:#337ab7">Rock Paper Scissors</a> &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href= "#playdemo" class= "btn btn-primary btn-xl page-scroll" style="background-color:#337ab7"> Light Cycle </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.fittext.js"></script>
+    <script src="js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/creative.js"></script>
+
+</body>
+
+</html>
