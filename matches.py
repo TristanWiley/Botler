@@ -13,8 +13,8 @@ DATA_PATH = 'player_data'
 
 class Player:
 
-    def __init__(self, script, player_id):
-        self.executable = compile(script, '<string>', 'exec')
+    def __init__(self, script, filepath, player_id):
+        self.executable = compile(script, filepath, 'exec')
         self.id = player_id
         self.wins = 0
         self.losses = 0
@@ -22,7 +22,7 @@ class Player:
         self.update_stats()
 
     def take_turn(self, world_state):
-        exec self.executable  # oh absolute horror
+        exec (self.executable, globals())  # oh absolute horror
         # I hope context works the way I'd expect here
         return main(world_state)
 
@@ -49,8 +49,9 @@ class Player:
 def create_sandbox(path, filename):
     # horrible brittle regexy piece of shit.
     player_id = re.search('(\d*)\.', filename).group(0)[:-1]
-    with open(os.path.join(path, filename), "r") as f:
-        return Player(f.read(), player_id)
+    filepath = os.path.join(path, filename)
+    with open(filepath, "r") as f:
+        return Player(f.read(),filepath, player_id)
 
 
 def run_sim(player_programs):
