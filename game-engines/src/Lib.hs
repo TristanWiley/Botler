@@ -2,11 +2,22 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Lib where
+import Control.Applicative
 import Control.Lens
+import Control.Monad
+import Control.Monad.Trans
 import Data.Aeson
 import Data.Aeson.Lens
+import Data.Char
+import Data.Conduit
+import System.IO
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as L
+import qualified Data.Conduit.Binary as CB
+import qualified Data.Conduit.List as CL
 import qualified Data.Text as T
 
 -- Definition of a "Game"
@@ -24,6 +35,29 @@ data Game state move = Game {
     }
 
 makeLenses ''Game
+
+-- generic game loop
+infixl 1 `bindJust`
+f `bindJust` g = f >>= maybe (return ()) g
+
+inspectConduit = await `bindJust` \x -> liftIO (print x) >> yield x
+
+runByteStringConduit :: Handle -> Handle -> ConduitM B.ByteString B.ByteString IO () -> IO ()
+runByteStringConduit i o c = runConduit $
+    CB.sourceHandle i =$=
+    CB.lines =$=
+    c =$=
+    CB.sinkHandle o
+
+gameLoop :: Game s m -> ConduitM B.ByteString B.ByteString IO ()
+gameLoop g = loop (g ^. blankState) where
+    loop state = do
+        liftA2 (>>=) await (pure (decode . L.fromStrict)) `bindJust` \(jsonLine :: Value) -> do
+            flip (maybe (loop state)) (jsonLine ^? nth 0 . _String) $ \functionName -> do
+                liftIO $ print functionName -- TODO: switch on function goes here
+        loop state
+
+main = runByteStringConduit stdin stdout (gameLoop rockPaperScissors)
 
 -- 2-player Rock-paper-scissors
 data RPSMove = Rock | Paper | Scissors deriving (Eq, Show)
@@ -57,6 +91,7 @@ rockPaperScissors = Game {
 
 -- JSON hello world
 
+{-
 jsonBlob :: T.Text
 jsonBlob = "{\"foo\": \"hello\", \"bar\": [\"world\"]}"
 
@@ -64,3 +99,4 @@ main :: IO ()
 main = do
     print $ jsonBlob ^. key "foo" . _String
     print $ jsonBlob ^. key "bar" . nth 0 . _String
+-}
