@@ -13,7 +13,7 @@ class Engine:
         self.proc = subprocess.Popen('game-engines/build_and_run.sh', 
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE,
-                                )
+)
 
     def get_world_state(self):
         try:

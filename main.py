@@ -1,4 +1,4 @@
-from flask import Flask, request, session, render_template, jsonify, redirect, url_for, send_from_directory
+from flask import Flask, request, session, render_template, jsonify, redirect, url_for, send_from_directory, Response
 from werkzeug import secure_filename
 #from flask.ext.socketio import SocketIO, send, emit
 from os import path
@@ -6,7 +6,7 @@ from os import path
 app = Flask(__name__, static_url_path='/static')
 #socketio = SocketIO(app)
 app.config['SECRET_KEY'] = 'secret!'
-
+app.debug = True
 app.config['UPLOAD_FOLDER'] = 'player_data'
 DATA_PATH = 'player_data'
 
@@ -24,7 +24,7 @@ def render_upload():
 
 @app.route('/api/stats/<name>')
 def get_stats(name):
-    with open(path.join(DATA_PATH, name)) as f:
+    with open(path.join(DATA_PATH, name+".json")) as f:
         return Response(response=f.read(), status=200, mimetype="application/json")
 
 
