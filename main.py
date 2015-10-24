@@ -13,6 +13,15 @@ app.config['UPLOAD_FOLDER'] = 'player_data'
 def index():
     pass
 
+@app.route('/api/stats/<name>')
+def get_stats(name):
+    #
+    # TODO: Fill this out. Return JSON! 
+    #
+    pass
+
+
+
 @socketio.on('connect')
 def handle_connect(message):
     # pipe data from the engine to the browser
