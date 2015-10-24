@@ -1,10 +1,10 @@
 from flask import Flask, request, session, render_template, jsonify, redirect, url_for, send_from_directory
 from werkzeug import secure_filename
-from flask.ext.socketio import SocketIO, send, emit
+#from flask.ext.socketio import SocketIO, send, emit
 from os import path
 
 app = Flask(__name__, static_url_path='/static')
-socketio = SocketIO(app)
+#socketio = SocketIO(app)
 app.config['SECRET_KEY'] = 'secret!'
 
 app.config['UPLOAD_FOLDER'] = 'player_data'
@@ -18,6 +18,9 @@ def render_index():
 @app.route('/docs')
 def render_docs():
     return render_template('docs.html')
+@app.route('/upload')
+def render_upload():
+    return render_template('ide.html')
 
 @app.route('/api/stats/<name>')
 def get_stats(name):
@@ -25,12 +28,12 @@ def get_stats(name):
         return Response(response=f.read(), status=200, mimetype="application/json")
 
 
-@socketio.on('connect')
-def handle_connect(message):
+#@socketio.on('connect')
+#def handle_connect(message):
     # pipe data from the engine to the browser
     # x should be an svg or something
     # facilitator.on_data(lambda x: emit('frame', {'frame': x}))
-    pass
+#    pass
 
 
 @app.route('/script_upload', methods=['GET', 'POST'])
@@ -43,4 +46,5 @@ def script_upload():
             return redirect('/')
 
 if __name__ == '__main__':
-    socketio.run(app)
+    #socketio.run(app)
+    app.run()
