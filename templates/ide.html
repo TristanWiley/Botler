@@ -55,7 +55,7 @@
         <!-- /.container-fluid -->
     </nav>
 
-   <section class="bg-primary" id = "abouttbhlol" style="height:100%">
+   <section class="bg-primary" id = "abouttbhlol" style="height:1000px">
         <div class="container" >
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 text-center">
@@ -73,18 +73,19 @@
                 <br><br><br><br><br><br><br>
                 <br><br><br><br><br><br><br>
                 <br><br><br><br><br><br><br>
-                <div class="ide_container">
-                    <textarea id="code" cols="120" rows="30">
+                <div class="fluid_container">
+                    <div class="ide_container">
+                        <textarea id="code" cols="120" rows="30">
 #My awesome bot that plays games
 
 from random import choice
 
 def main(data):
     return choice(data['valid_moves'])
-                    </textarea>
-                </div>
-
-                <a onclick = "prompt_submit()" class= "btn btn-primary btn-xl page-scroll prog_submit"> Upload File </a>  
+                        </textarea>
+                    </div>
+                    <a onclick = "prompt_submit()" class= "btn btn-primary btn-xl page-scroll prog_submit"> Upload File </a> 
+                </div> 
             </div>
         </div>
     </section>  
