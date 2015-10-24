@@ -7,4 +7,4 @@ Contributors:
 - Ellie Jung
 - Elliott Weintraub
 - Jordan Ephron
-- Tristan Wiley
+- Tristan Wiley - Android Developer
