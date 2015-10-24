@@ -4,20 +4,22 @@ import itertools
 import engine_pipe as engine
 import pickle
 
+SCRIPT_PATH = 'player_scripts'
+DATA_PATH = 'player_data'
 
 class Player:
-    __init__(self, script):
-        self.executable = script  
+    def __init__(self, script, id):
+        self.executable = script 
+        self.id = id 
 
     def take_turn(self, world_state):
-        return exec(self.executable) # oh absolute horror
+        exec self.executable # oh absolute horror
 
-
-def update_player_stats(new_stats):
-    with open()
-    current_stats = json.loads()
-    json.dumps({'4': 5, '6': 7}, sort_keys=True,
-               indent=4, separators=(',', ': '))
+    def update_stats():
+        with open('') as f:
+            current_stats = json.loads()
+            json.dumps({'4': 5, '6': 7}, sort_keys=True,
+                       indent=4, separators=(',', ': ')
 
 
 def create_sandbox(filename):
@@ -41,6 +43,6 @@ def run_sim(player_programs):
 if __name__ == '__main__':
     num_processes = 4
     p = Pool(num_processes)
-    files = [f for f in os.listdir(FILE_PATH) if os.isfile(join(FILE_PATH, f))]
+    files = [f for f in os.listdir(SCRIPT_PATH) if os.isfile(join(SCRIPT_PATH, f))]
     matches = [m for m in itertools.permutations(files, r=2)]
     print(p.map(f, m))
