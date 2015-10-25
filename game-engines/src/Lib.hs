@@ -163,7 +163,7 @@ tronBikeGame size@(width, height) = fix $ \game -> Game {
     _renderState = \(TS p1 p2 (TG board)) -> let
 {-
 (echo '["renderState"]' | ./build_and_run.sh tron) > foo.svg
-(python -c 'print """["makeMove", [{"tag":"KeepGoing","contents":[]},{"tag":"KeepGoing","contents":[]}]]\n"""*2 + """["renderState"]"""' | ./build_and_run.sh tron) > foo.svg
+(python -c 'print """["makeMove", [{"tag":"KeepGoing","contents":[]},{"tag":"KeepGoing","contents":[]}]]\n"""*30 + """["renderState"]"""' | ./build_and_run.sh tron) > foo.svg
 cat foo.svg | sed 's#\([^\]\)"#\1#g' | sed 's#^"##g' | sed 's#\\"#"#g' > fooprime.svg
 -}
         cellSize = 32
@@ -175,7 +175,7 @@ cat foo.svg | sed 's#\([^\]\)"#\1#g' | sed 's#^"##g' | sed 's#\\"#"#g' > fooprim
         playerColor 1 = "rgb(0,0,255)"
         playerColor _ = "rgb(128,128,128)" -- shouldn't happen, but define something visible to be safe
         mkStyle :: T.Text -> Float -> T.Text
-        mkStyle = [st|style='fill:%s;stroke=black;stroke-width=6;fill-opacity:%f'|]
+        mkStyle = [st|style='fill:%s;stroke:black;stroke-width:2;fill-opacity:%f'|]
         renderCell (TC (x,y), Nothing) = [st|<rect x="%d" y="%d" width="%d" height="%d" %s />|]
             (x*cellSize) (y*cellSize) cellSize cellSize (mkStyle "white" 1.0)
         renderCell (TC (x,y), Just i) = [st|<rect x="%d" y="%d" width="%d" height="%d" %s />|]
