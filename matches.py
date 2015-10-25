@@ -123,7 +123,7 @@ def run_sim(player_programs):
 
     # stats_obj = get_player_stats(player1)
     rps_mapping = {'r': "Rock", 'p': 'Paper', 's': "Scissors"}
-
+    
     print '---------'
 
     for player_id in [next(cycleit) for i in range(0, n)]:
@@ -167,6 +167,79 @@ def run_sim(player_programs):
         except:
             print sys.exc_info()
             break
+        if game_type == 'tron':
+            state = engine.getState()
+            
+            # p1_pos = state[0][0] (x, y)
+            # p1_dir = state[0][1]['tag']
+            # p2_pos_dir = state[1] (x, y, )
+            # grid = state[2][1]
+            # bounds = state[2][0]
+            # coords = grid[i][j][0]
+            # maybe wall_owner = grid[i][j][1] 
+
+
+
+            p1_pos = state[0][0]
+            p1_dir = state[0][1]['tag']
+
+            p2_pos = state[1][0]
+            p2_dir = state[1][1]['tag']
+
+            curr_pos = state[player_id][0]
+            curr_dir = state[player_id][1]['tag'] # 'North', 'South', 'East', 'West'
+
+            grid = state[2][1]
+            bounds = state[2][0]
+            coords = grid[i][j][0]
+
+            dir_py_to_hask = {'r':'East','l':'West','d':'South','u':'North'}
+            dir_hask_to_py = {'East':'r','West':'l','South':'d','North':'u'} #todo dict comp (faster to not use new syntax now)
+            moves_legend_py_to_hask = {'l':'turnCW', 'r':'turnCCW', 's':'KeepGoing'}
+
+            # simlu updates
+            moves = []
+            for i in [0,1]:
+                current_player = players[i]
+
+                ret = current_player.take_turn({
+                    "valid_moves": ['l','r','s'], 
+                    "player": i, 
+                    "history": player_1_history,
+                    "board": {tuple(k):v for (k, v) in grid},
+                    "current_direction": dir_hask_to_py[curr_dir]
+                    })
+
+                print ret
+                moves.append({'contents':[], 'tag':moves_legend_py_to_hask[ret]})
+
+            engine.makeMove([move for move in moves])
+
+            status = engine.getStatus()
+            print status
+
+            if status['tag'] == 'PlayerWin' and status['contents'] == 1:
+                print player_id, "player wins"
+                players[1].win()
+                players[0].lose()
+                engine.reset()
+                continue
+            
+            if status['tag'] == 'PlayerWin' and status['contents'] == 0:
+                print player_id, "player loses"
+                players[0].win()
+                players[1].lose()
+                engine.reset()
+                continue
+
+            if status['tag'] == 'Drawn':
+                print player_id, "player drawn"
+                players[0].tie()
+                players[1].tie()
+                engine.reset()
+                continue
+
+
     # player1.update_stats()
     # player2.update_stats()
 
