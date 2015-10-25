@@ -16,6 +16,7 @@ import Data.Aeson
 import Data.Aeson.Lens
 import Data.Char
 import Data.Conduit
+import Data.Function
 import Data.List(intercalate)
 import Data.Maybe
 import Data.Monoid
@@ -147,14 +148,17 @@ tronCheckStatus (TS (TP (p1,d1)) (TP (p2,d2)) (TG board)) = let
         (False,False) -> Drawn
 
 tronBikeGame :: (Int, Int) -> Game TronState (TronMove, TronMove)
-tronBikeGame size@(width, height) = Game {
+tronBikeGame size@(width, height) = fix $ \game -> Game {
     _blankState = TS (TP (TC (0,0), South)) (TP (TC size, North)) (TG (A.listArray (TC (0,0),TC size) (repeat Nothing))),
     _checkStatus = tronCheckStatus,
     _makeMove = \(m1,m2) state@(TS (TP (p1,d1)) (TP (p2,d2)) (TG board)) -> case tronCheckStatus state of
         CurrentTurn _ -> let
             [d1', d2'] = zipWith applyTurn [m1,m2] [d1,d2]
             [p1', p2'] = zipWith updatePosition [p1, p2] [d1', d2']
-            in Just (TS (TP (p1',d1')) (TP (p2', d2')) (TG (board A.// [(p1,Just 0), (p2,Just 1)])))
+            inBounds = all (A.inRange (A.bounds board)) [p1', p2']
+            in if inBounds
+                then Just (TS (TP (p1',d1')) (TP (p2', d2')) (TG (board A.// [(p1,Just 0), (p2,Just 1)])))
+                else Nothing
         _ -> Nothing,
     _renderState = \(TS p1 p2 (TG board)) -> let
 {-
@@ -181,9 +185,7 @@ cat foo.svg | sed 's#\([^\]\)"#\1#g' | sed 's#^"##g' | sed 's#\\"#"#g' > fooprim
         playerData = renderPlayer p1 0 <> renderPlayer p2 1
         in header <> foldMap renderCell (A.assocs board) <> playerData <> footer
         ,
-    _validMoves = \state -> case tronCheckStatus state of
-        CurrentTurn _ -> (liftA2 (,) <*> id) [KeepGoing, TurnCW, TurnCCW]
-        _ -> []
+    _validMoves = \state -> filter (isJust . (flip (game ^. makeMove) state)) $ (liftA2 (,) <*> id) [KeepGoing, TurnCW, TurnCCW]
     }
 
 -- 2-player Tic-Tac-Toe
