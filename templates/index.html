@@ -124,12 +124,27 @@
 	<section id="portfolio" class="bg-dark"> 
       	<div>
             <h2 class="section-heading" style = "color:#FFFFFF ; font-weight:300 ; text-align: center; font-size:36px; "> Botler Live Stats </h2>
-            <canvas id="buyers" width="600" height="400"></canvas>
-    		
+
+            <input name="script_name" type="text" class="form-control" id="script_name" placeholder="Script Name">
+
+            <a id="get_stats" class= "btn btn-primary btn-xl page-scroll"> Get Stats </a>
+
+            <div id="thing" style="color:white">Things</div>
         </div>
     </section>
 
-    
+    <script>
+        //document.getElementById("get_stats").onclick = function () {
+        //    alert("AKJsfsda");
+        //    val url = "botler.cloudapp.net/api/stats/"+document.getElementById("script_name").value;
+        //    $("#thing").load(url, null, null).show("slow");
+        //};
+        alert("SDSHF");
+        $("#thing").load("localhost:5000/api/stats/bias_rock", function {
+            alert("SDFKSHF"); 
+            alert(response.html);
+        });
+    </script>
 
     <section id="contact">
         <div class="container">
