@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="/static/css/monokai.css" type="text/css">
 
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
 
     
      
@@ -64,6 +65,12 @@ $('.Upload').ElasticProgress({/*options*/});
         <!-- /.container-fluid -->
     </nav>
 
+    <section class="bg-primary">
+       <div class="col-lg-8 col-lg-offset-2 text-center" id="gamescreen">
+
+       </div>
+    </section>  
+
    <section class="bg-primary" id = "abouttbhlol" style="height:2000px">
         <form action="/script_upload" id="script_uploader", method="POST">
             <div class="container" >
@@ -96,13 +103,15 @@ def main(data):
                             <br>
                             <input name="script_name" type="text" class="form-control" id="script_name" placeholder="Script Name">
                             <br>
-                            <select name="game" form="script_uploader" class="form-control">
+                            <select name="game" id="game_select" form="script_uploader" class="form-control">
                               <option value="rps">Rock Paper Scissors</option>
                               <option value="tron">Light Cycle</option>
                             </select>
 
                         </div>
-                        <button type="submit" class="btn btn-primary btn-xl page-scroll prog_submit1" style="margin-left:515px;">Upload File</button>
+                        <button type="submit" class="btn btn-primary btn-xl page-scroll prog_submit1" id="upload-file" style="margin-left:515px;">Upload File</button>
+                        <br><br><br>
+                        <a id="runsim" class="btn btn-primary btn-xl page-scroll prog_submit1" style="margin-left:530px;">Run Sim</a>
                     </div> 
                     
 
@@ -111,10 +120,52 @@ def main(data):
  -->                </div>
             </div>
 
+
         </form>
     </section>  
 
     <script>
+
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        socket.on('connect', function() {
+            document.getElementById("runsim").onclick = function(){
+                alert($('#game_select').val())
+                socket.emit('simstart', { script_name: $('#script_name').val(), game_name: $('#game_select').val() });    
+            }
+            // $("#runsim").on('click', function(e){
+            // })
+            
+        });
+        svgbuff = []
+        socket.on('frame', function(msg){
+            svgbuff.push(msg['data'])
+
+        })
+
+        socket.on('seqend', function(){
+            console.log("yo")
+            i = 0
+            function ren(){
+                console.log("running")
+                $("#gamescreen").html(svgbuff[i]);
+                i++
+                setTimeout(function(){
+                    ren()
+                },100)
+            }
+            ren()
+            // for(svg in svgbuff){
+                // console.log("SVG", svgbuff[svg])
+                // $("#gamescreen").html(svgbuff[svg]);
+
+            // }
+            
+        })
+
+
+
+
+
 
         $("#script_uploader").submit(function() {
 
@@ -126,7 +177,7 @@ def main(data):
                    data: $("#script_uploader").serialize(), // serializes the form's elements.
                    success: function(data)
                    {
-                        
+                        $("#upload-file").text('Uploaded...')
                    }
                  });
 

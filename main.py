@@ -1,17 +1,16 @@
 from flask import Flask, request, session, render_template, jsonify, redirect, url_for, send_from_directory, Response
 from werkzeug import secure_filename
-#from flask.ext.socketio import SocketIO, send, emit
+from flask.ext.socketio import SocketIO, send, emit
 from os import path, listdir
 import os
 import json
 import re
 import random
 import subprocess
-
-import matches
+from matches import match_against
 
 app = Flask(__name__, static_url_path='/static')
-#socketio = SocketIO(app)
+socketio = SocketIO(app)
 app.config['SECRET_KEY'] = 'secret!'
 app.debug = True
 app.config['UPLOAD_FOLDER'] = 'player_data'
@@ -93,12 +92,23 @@ def get_game_stats(name):
 
     return Response(response=gamestats, status=200, mimetype="application/json")
 
-#@socketio.on('connect')
-# def handle_connect(message):
+@socketio.on('simstart')
+def handle_simstart(message):
+    filename = '-'.join(
+        [message['game_name'], secure_filename(message['script_name']).replace('-', '_').replace(' ', '_')]) + '.py'
+
+    py_filename = filename
+    print "running?"
+    def printstuff(x):
+        print "got callback"
+        print x
+
+    match_against(py_filename, lambda x: emit('frame', {'data':x}))
+    emit('seqend',{})
     # pipe data from the engine to the browser
     # x should be an svg or something
     # facilitator.on_data(lambda x: emit('frame', {'frame': x}))
-#    pass
+    pass
 # ffrdc
 
 
@@ -112,13 +122,14 @@ def script_upload():
             return redirect('/')
         filename = '-'.join(
             [game, secure_filename(script_name).replace('-', '_').replace(' ', '_')]) + '.py'
-
-        with open(os.path.join(app.config['SCRIPTS_FOLDER'], filename), 'a+') as f:
+        py_filename = os.path.join(app.config['SCRIPTS_FOLDER'], filename)
+        with open(py_filename, 'a+') as f:
             f.seek(0)
             f.truncate(0)
             f.write(code)
 
-        with open(os.path.join(app.config['UPLOAD_FOLDER'], filename[:-3]+".json"), 'a+') as g:
+        json_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename[:-3]+".json")
+        with open(json_filename, 'a+') as g:
             g.write('{"wins":0,"losses":0,"ties":0,"history":[]}')
 
         return redirect('/upload')
@@ -127,4 +138,5 @@ def script_upload():
 if __name__ == '__main__':
     # socketio.run(app)
     # app.run()
-    app.run(host='0.0.0.0', port=5000)
+    #app.run(host='0.0.0.0', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000)

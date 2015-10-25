@@ -18,7 +18,6 @@ DATA_PATH = 'player_data'
 class UserScript:
 
     def __init__(self, script, filepath, player_id):
-        print "init user script for ", filepath
         # should trycatch
         self.executable = compile(script, filepath, 'exec')
 
@@ -40,8 +39,6 @@ class UserScript:
                 try:
                     text = f.read()
                     current_stats = json.loads(text)
-                    print "PATH!", stats_file_path
-                    print 'CURR', text
                     self.wins = current_stats['wins']
                     self.losses = current_stats['losses']
                     self.ties = current_stats['ties']
@@ -117,16 +114,15 @@ class UserScript:
 
 
 def create_sandbox(path, filename):
-    # horrible brittle regexy piece of shit.
     filepath = os.path.join(path, filename)
+    print filepath
     with open(filepath, "r") as f:
         return UserScript(f.read(), filepath, filename)
 
 
-def run_sim(player_programs):
+def run_sim(player_programs, cb = lambda x: x):
     print "playing", player_programs[0], "against", player_programs[1]
-    n = 10 # number of games
-
+    
     game_type = player_programs[0].split('-')[0]
 
     player1 = create_sandbox(SCRIPT_PATH, player_programs[0])
@@ -145,25 +141,35 @@ def run_sim(player_programs):
     # stats_obj = get_player_stats(player1)
     rps_mapping = {'r': "Rock", 'p': 'Paper', 's': "Scissors"}
     
+    rps_counter = 0
+    rps_max = 10
+
     print '---------'
 
-    for player_id in [next(cycleit) for i in range(0, n)]:
-
+    # for player_id in [next(cycleit) for i in range()]:
+    while True:
+        player_id = next(cycleit)
         print '(', player_id, ')'
         current_player = players[player_id]
 
         world_state = engine.getState()
 
         valid_moves = engine.getValidMoves()
-
+        
         try:
-            if game_type == 'rps':
-                ret = current_player.take_turn({"valid_moves": valid_moves, "player": 1, "history": player_1_history})
-                print ret
+            if rps_counter >= rps_max:
+                break
+            if game_type == 'rps' and rps_counter < rps_max:
+                rps_counter = rps_counter + 1
 
-                engine.makeMove({'contents': [], 'tag': rps_mapping[ret]})
+                ret = current_player.take_turn({"valid_moves": valid_moves, "player": 1, "history": player_1_history})
+                print type(ret)
+                print "RET TAG", ret['tag']
+                engine.makeMove({'contents': [], 'tag': rps_mapping[ret['tag']]})
                 status = engine.getStatus()
-                print status
+
+                cb("HELLO WORLDDDDDD")
+                print "SVG:", engine.renderState()
 
                 if status['tag'] == 'PlayerWin' and status['contents'] == 1:
                     print player_id, "player wins"
@@ -200,7 +206,7 @@ def run_sim(player_programs):
             # maybe wall_owner = grid[i][j][1] 
 
 
-
+            cb(engine.renderState())
             p1_pos = state[0][0]
             p1_dir = state[0][1]['tag']
 
@@ -247,34 +253,43 @@ def run_sim(player_programs):
                 players[1].win()
                 players[0].lose()
                 engine.reset()
-                continue
+                break
             
             if status['tag'] == 'PlayerWin' and status['contents'] == 0:
                 print player_id, "player loses"
                 players[0].win()
                 players[1].lose()
                 engine.reset()
-                continue
+                break
 
             if status['tag'] == 'Drawn':
                 print player_id, "player drawn"
                 players[0].tie()
                 players[1].tie()
                 engine.reset()
-                continue
+                break
 
 
     # player1.update_stats()
     # player2.update_stats()
 
 
-def match_against(filename):
+def match_against(filename, cb=lambda x: x):
     files = [f for f in listdir(SCRIPT_PATH) if (
         path.isfile(path.join(SCRIPT_PATH, f)) and f[0] != '.' and f != filename)]
     a1 = itertools.repeat(filename, len(files))
+
+
     tups = zip(a1, files)
+
+    tups = filter(lambda m: m[0].split('-')[0] == m[1].split('-')[0], tups)
+
     print tups
-    map(run_sim, tups)
+    cb(1)
+    for i in tups:
+        run_sim(i, cb)
+    
+    # map(run_sim, tups)
 
 if __name__ == '__main__':
     num_processes = 4 #4 total processes after each call

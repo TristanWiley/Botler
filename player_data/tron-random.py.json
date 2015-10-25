@@ -1,8 +1,25 @@
 {
     "history": [
+        "loss",
+        "draw",
+        "draw",
+        "draw",
+        "loss",
+        "loss",
+        "win",
+        "win",
+        "win",
+        "loss",
+        "win",
+        "loss",
+        "loss",
+        "win",
+        "win",
+        "loss",
+        "loss",
         "win"
     ],
-    "losses": 0,
-    "ties": 0,
-    "wins": 1
+    "losses": 8,
+    "ties": 3,
+    "wins": 7
 }

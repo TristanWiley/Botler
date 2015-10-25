@@ -41,6 +41,10 @@ class Engine:
     def getValidMoves(self):
         self.write('["validMoves"]')
         return self.read()
+    
+    def renderState(self):
+        self.write('["renderState"]')
+        return self.read()
 
     def reset(self):
         self.write('["reset"]')
