@@ -68,6 +68,7 @@ gameLoop g = loop (g ^. blankState) where
         liftA2 (>>=) await (pure (decode . L.fromStrict)) >>= \case
             Just (jsonLine :: Value) -> do
                 pure (jsonLine ^? nth 0 . _String) `bindJust` \case
+                    "reset" -> loop (g ^. blankState)
                     "getState" -> emit state >> loop state
                     "checkStatus" -> emit ((g ^. checkStatus) state) >> loop state
                     "makeMove" -> pure (jsonLine ^? nth 1 . _JSON) `bindJust` \(move :: m) ->
