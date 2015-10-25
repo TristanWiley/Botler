@@ -17,27 +17,43 @@ DATA_PATH = 'player_data'
 class UserScript:
 
     def __init__(self, script, filepath, player_id):
-        try:
-            self.executable = compile(script, filepath, 'exec')
-        except:
-            self.chances = 3
-            self.id = player_id
-            self.wins = 0
-            self.losses = 1
-            self.ties = 0
-            self.update_stats()
-        else:
-            self.chances = 3
-            self.id = player_id
-            self.wins = 0
-            self.losses = 0
-            self.ties = 0
-            self.update_stats()
+        print "init user script for ", filepath
+        # should trycatch
+        self.executable = compile(script, filepath, 'exec')
+
+        self.chances = 3
+        self.id = player_id
+
+
+        stats_file_path = os.path.join(DATA_PATH, str(self.id) + '.json')
+
+        with open(stats_file_path, 'r') as f:
+            try:
+                text = f.read()
+                current_stats = json.loads(text)
+                print "PATH!", stats_file_path
+                print 'CURR', text
+                self.wins = current_stats['wins']
+                self.losses = current_stats['losses']
+                self.ties = current_stats['ties']
+                self.history = current_stats['history']
+
+            except ValueError:
+                # defaults...
+                self.chances = 3
+                self.id = player_id
+                self.wins = 0
+                self.losses = 0
+                self.ties = 0
+                self.update_stats()
+
 
     def take_turn(self, world_state):
         exec (self.executable, globals())  # oh absolute horror
         # I hope context works the way I'd expect here
         return main(world_state)
+        # fantasy football for competitive coding
+    
 
     def update_stats(self):
         stats_file_path = os.path.join(DATA_PATH, str(self.id) + '.json')
@@ -56,7 +72,7 @@ class UserScript:
             current_stats['wins'] = self.wins
             current_stats['losses'] = self.losses
             current_stats['ties'] = self.ties
-
+            current_stats['history'] = self.history
             print current_stats
             new_stats = json.dumps(current_stats, sort_keys=True,
                                    indent=4, separators=(',', ': '))
@@ -65,14 +81,17 @@ class UserScript:
 
     def win(self):
         self.wins = self.wins + 1
+        self.history.append("win")
         self.update_stats()
 
     def lose(self):
         self.losses = self.losses + 1
+        self.history.append("loss")
         self.update_stats()
 
     def tie(self):
         self.ties = self.ties + 1
+        self.history.append("draw")
         self.update_stats()
 
 
@@ -103,53 +122,53 @@ def run_sim(player_programs):
     player_2_history = []
 
     # stats_obj = get_player_stats(player1)
-    rps_mapping = {'r':"Rock", 'p':'Paper', 's':"Scissors"}
+    rps_mapping = {'r': "Rock", 'p': 'Paper', 's': "Scissors"}
 
+    print '---------'
 
-    for player_id in [next(cycleit) for i in range(n)]:
+    for player_id in [next(cycleit) for i in range(0, n)]:
+
+        print '(', player_id, ')'
         current_player = players[player_id]
 
         world_state = engine.getState()
-        print world_state
 
         valid_moves = engine.getValidMoves()
 
-        # try:
-        #     if game_type == 'rps':
-        #         ret = player.take_turn({"valid_moves": valid_moves, "player": 1, "history": player_1_history})
-        #         engine.makeMove({'contents': [], 'tag': rps_mapping[ret]})
-        #         status = engine.getStatus()
+        try:
+            if game_type == 'rps':
+                ret = current_player.take_turn({"valid_moves": valid_moves, "player": 1, "history": player_1_history})
+                print ret
 
-        #         if status['tag'] == 'PlayerWin' and status['contents'] == 1:
-        #             print "player wins"
-        #             players[1].win()
-        #             players[0].lose()
-        #             engine.reset()
-        #             break
+                engine.makeMove({'contents': [], 'tag': rps_mapping[ret]})
+                status = engine.getStatus()
+                print status
+
+                if status['tag'] == 'PlayerWin' and status['contents'] == 1:
+                    print player_id, "player wins"
+                    players[1].win()
+                    players[0].lose()
+                    engine.reset()
+                    continue
                 
-        #         if status['tag'] == 'Player' and status['contents'] == 0:
-        #             players[1].lose()
-        #             players[0].win()
-        #             engine.reset()
-        #             break
+                if status['tag'] == 'PlayerWin' and status['contents'] == 0:
+                    print player_id, "player loses"
+                    players[0].win()
+                    players[1].lose()
+                    engine.reset()
+                    continue
 
-        #         if status['tag'] == 'Drawn':
-        #             players[1].tie()
-        #             players[0].tie()
-        #             engine.reset()
-        #             break
-
-        #     elif game_type == 'tron':
-        #         pass
-        #         # ret = player.take_turn({"valid_moves": valid_moves, "player": 1, "history": player_2_history})
-        #         # engine.makeMove({'contents': [], 'tag': rps_mapping[ret]})
-
-        #     print ret
-            
-        # except:
-        #     break
-    player1.update_stats()
-    player2.update_stats()
+                if status['tag'] == 'Drawn':
+                    print player_id, "player drawn"
+                    players[0].tie()
+                    players[1].tie()
+                    engine.reset()
+                    continue
+        except:
+            print sys.exc_info()
+            break
+    # player1.update_stats()
+    # player2.update_stats()
 
 
 if __name__ == '__main__':
