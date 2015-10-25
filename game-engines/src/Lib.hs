@@ -7,6 +7,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Lib where
 import Control.Applicative
+import Control.Arrow
 import Control.Lens
 import Control.Monad
 import Control.Monad.Trans
@@ -18,12 +19,15 @@ import Data.List(intercalate)
 import Data.Maybe
 import Data.Monoid
 import System.IO
+import System.Environment
+import qualified Data.Array as A
 import qualified Data.Aeson.TH as AT
 import qualified Data.Array as A
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Conduit.Binary as CB
 import qualified Data.Conduit.List as CL
+import qualified Data.HashMap.Strict as H
 import qualified Data.Text as T
 
 -- Definition of a "Game"
@@ -72,7 +76,12 @@ gameLoop g = loop (g ^. blankState) where
                     _ -> loop state
             Nothing -> loop state
 
-main = runByteStringConduit stdin stdout (gameLoop rockPaperScissors)
+main = getArgs >>= \case
+    ["rps"] -> runGame rockPaperScissors
+    ["tron"] -> runGame (tronBikeGame (20,20))
+    ["tron", x, y] -> runGame (tronBikeGame (read x, read y))
+    _ -> putStrLn "Options: rps, tron [x y]"
+    where runGame = runByteStringConduit stdin stdout . gameLoop 
 
 -- 2-player Rock-paper-scissors
 data RPSMove = Rock | Paper | Scissors deriving (Eq, Show)
@@ -104,28 +113,27 @@ rockPaperScissors = Game {
         _ -> [Rock, Paper, Scissors]
     }
 
-deriveAllJSONs [''RPSMove, ''RPSState]
 
 -- 2-player Tron
 data TronMove = KeepGoing | TurnCW | TurnCCW deriving Show
 data TronDirection = North | East | South | West deriving (Enum, Show)
-type TronCoord = (Int, Int)
-type TronPlayer = (TronCoord, TronDirection)
-type TronGrid = A.Array TronCoord (Maybe PlayerId)
+newtype TronCoord = TC { unTC :: (Int, Int) } deriving (Eq, A.Ix, Ord, Show)
+newtype TronPlayer = TP (TronCoord, TronDirection) deriving Show
+newtype TronGrid = TG (A.Array TronCoord (Maybe PlayerId)) deriving Show
 data TronState = TS TronPlayer TronPlayer TronGrid deriving Show
 
 applyTurn :: TronMove -> TronDirection -> TronDirection
 applyTurn dir x = toEnum ((fromEnum x + f dir) `mod` 4) where
         f KeepGoing = 0; f TurnCW = 1; f TurnCCW = -1
 
-getDelta North = ( 0,-1)
-getDelta South = ( 0, 1)
-getDelta West  = (-1, 0)
-getDelta East  = ( 1, 0)
+getDelta North = TC ( 0,-1)
+getDelta South = TC ( 0, 1)
+getDelta West  = TC (-1, 0)
+getDelta East  = TC ( 1, 0)
 
-updatePosition (x,y) dir = let (dx, dy) = getDelta dir in (x+dx, y+dy)
+updatePosition (TC (x,y)) dir = let TC (dx, dy) = getDelta dir in TC (x+dx, y+dy)
 
-tronCheckStatus (TS (p1,d1) (p2,d2) board) = let
+tronCheckStatus (TS (TP (p1,d1)) (TP (p2,d2)) (TG board)) = let
     [alive1, alive2] = map (isNothing . (board A.!)) [p1,p2]
     in case (alive1, alive2) of
         (True,True) -> CurrentTurn 0
@@ -133,15 +141,15 @@ tronCheckStatus (TS (p1,d1) (p2,d2) board) = let
         (False,True) -> PlayerWin 1
         (False,False) -> Drawn
 
-tronBikeGame :: TronCoord -> Game TronState (TronMove, TronMove)
+tronBikeGame :: (Int, Int) -> Game TronState (TronMove, TronMove)
 tronBikeGame size@(width, height) = Game {
-    _blankState = TS ((0,0), South) (size, North) (A.listArray ((0,0),size) (repeat Nothing)),
+    _blankState = TS (TP (TC (0,0), South)) (TP (TC size, North)) (TG (A.listArray (TC (0,0),TC size) (repeat Nothing))),
     _checkStatus = tronCheckStatus,
-    _makeMove = \(m1,m2) state@(TS (p1,d1) (p2,d2) board) -> case tronCheckStatus state of
+    _makeMove = \(m1,m2) state@(TS (TP (p1,d1)) (TP (p2,d2)) (TG board)) -> case tronCheckStatus state of
         CurrentTurn _ -> let
             [d1', d2'] = zipWith applyTurn [m1,m2] [d1,d2]
             [p1', p2'] = zipWith updatePosition [p1, p2] [d1', d2']
-            in Just (TS (p1',d1') (p2', d2') (board A.// [(p1,Just 0), (p2,Just 1)]))
+            in Just (TS (TP (p1',d1')) (TP (p2', d2')) (TG (board A.// [(p1,Just 0), (p2,Just 1)])))
         _ -> Nothing,
     _renderState = T.pack . show, -- TODO: SVG
     _validMoves = \state -> case tronCheckStatus state of
@@ -264,3 +272,16 @@ main = do
     print $ jsonBlob ^. key "foo" . _String
     print $ jsonBlob ^. key "bar" . nth 0 . _String
 -}
+
+{-
+instance (A.Ix i, Show i, ToJSON e) => ToJSON (A.Array i e) where
+    toJSON = Object . H.fromList . Prelude.map ((T.pack . show) *** toJSON) . A.assocs
+instance (A.Ix i, Read i, FromJSON e) => FromJSON (A.Array i e) where
+    fromJSON (Object m) = H
+-}
+instance (A.Ix a, ToJSON a, ToJSON b) => ToJSON (A.Array a b) where toJSON arr = toJSON (A.bounds arr, A.assocs arr)
+instance (A.Ix a, FromJSON a, FromJSON b) => FromJSON (A.Array a b) where parseJSON = fmap (uncurry A.array) . parseJSON
+
+deriveAllJSONs [''RPSMove, ''RPSState]
+deriveAllJSONs [''TronDirection, ''TronMove, ''TronState]
+deriveAllJSONs [''TronCoord, ''TronGrid, ''TronPlayer]
