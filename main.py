@@ -70,21 +70,23 @@ def get_game_stats(name):
     # best player
     total_plays = 0
     num_players = 0
-    best_player = {'id': -1, 'wins': 0}
+    best_script = {'name': "none", 'wins': 0}
     files = [f for f in listdir(DATA_PATH) if (
         path.isfile(path.join(DATA_PATH, f)) and f[0] != '.')]
     for fname in files:
         with open(path.join(DATA_PATH, fname)) as f:
-            player_id = re.search('(\d*)\.', fname).group(0)[:-1]
+            script_name = fname.split('-')[1]
+            game_name = fname.split('-')[0]
+
             stats = json.loads(f.read())
             total_plays = total_plays + stats['wins']
             total_plays = total_plays + stats['losses']
             total_plays = total_plays + stats['ties']
             num_players = num_players + 1
-            if(stats['wins'] > best_player['wins']):
-                best_player['id'] = player_id
-                best_player['wins'] = stats['wins']
-    gamestats = json.dumps({'total_plays': total_plays, 'num_players': num_players, 'best_player': best_player}, sort_keys=True,
+            if(stats['wins'] > best_script['wins']):
+                best_script['name'] = script_name
+                best_script['wins'] = stats['wins']
+    gamestats = json.dumps({'total_plays': total_plays, 'num_players': num_players, 'best_script': best_script}, sort_keys=True,
                            indent=4, separators=(',', ': '))
 
     return Response(response=gamestats, status=200, mimetype="application/json")
@@ -115,7 +117,7 @@ def script_upload():
             f.write(code)
 
         with open(os.path.join(app.config['UPLOAD_FOLDER'], filename[:-3]+".json"), 'a+') as g:
-            g.write('{"wins":0,"losses":0,"ties":0}')
+            g.write('{"wins":0,"losses":0,"ties":0,"history":[]}')
 
         return redirect('/')
 
