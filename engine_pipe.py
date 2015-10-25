@@ -36,8 +36,7 @@ class Engine:
         return self.read()
 
     def makeMove(self, move):
-        assert isinstance(move, dict)
-        self.write('["makeMove", %s]' % json.dumps(move))
+        self.write('["makeMove", %s]' % (json.dumps(move),))
         
     def getValidMoves(self):
         self.write('["validMoves"]')

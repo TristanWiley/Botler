@@ -8,6 +8,8 @@ import re
 import random
 import subprocess
 
+import matches
+
 app = Flask(__name__, static_url_path='/static')
 #socketio = SocketIO(app)
 app.config['SECRET_KEY'] = 'secret!'
@@ -119,7 +121,7 @@ def script_upload():
         with open(os.path.join(app.config['UPLOAD_FOLDER'], filename[:-3]+".json"), 'a+') as g:
             g.write('{"wins":0,"losses":0,"ties":0,"history":[]}')
 
-        return redirect('/')
+        return redirect('/upload')
 
 
 if __name__ == '__main__':

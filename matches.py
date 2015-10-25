@@ -6,6 +6,7 @@ from engine_pipe import Engine
 import re
 import json
 import sys
+from itertools import repeat
 
 # todo: get rid of exec, do this with sockets
 
@@ -26,26 +27,46 @@ class UserScript:
 
 
         stats_file_path = os.path.join(DATA_PATH, str(self.id) + '.json')
+        
+        self.chances = 3
+        self.id = player_id
+        self.wins = 0
+        self.losses = 0
+        self.ties = 0
+        self.history = []
 
-        with open(stats_file_path, 'r') as f:
-            try:
-                text = f.read()
-                current_stats = json.loads(text)
-                print "PATH!", stats_file_path
-                print 'CURR', text
-                self.wins = current_stats['wins']
-                self.losses = current_stats['losses']
-                self.ties = current_stats['ties']
-                self.history = current_stats['history']
+        try:
+            with open(stats_file_path, 'r') as f:
+                try:
+                    text = f.read()
+                    current_stats = json.loads(text)
+                    print "PATH!", stats_file_path
+                    print 'CURR', text
+                    self.wins = current_stats['wins']
+                    self.losses = current_stats['losses']
+                    self.ties = current_stats['ties']
+                    self.history = current_stats['history']
 
-            except ValueError:
-                # defaults...
-                self.chances = 3
-                self.id = player_id
-                self.wins = 0
-                self.losses = 0
-                self.ties = 0
-                self.update_stats()
+                except ValueError:
+                    pass
+        except IOError:
+            print "no stats file for user #", self.id
+            print "creating one..."
+            with open(stats_file_path, 'a+') as f:
+                    current_stats = {}
+                    current_stats['wins'] = self.wins
+                    current_stats['losses'] = self.losses
+                    current_stats['ties'] = self.ties
+                    current_stats['history'] = self.history
+                    new_stats = json.dumps(current_stats, sort_keys=True,
+                                           indent=4, separators=(',', ': '))
+                    f.write(new_stats)
+
+
+        self.update_stats()
+
+
+
 
 
     def take_turn(self, world_state):
@@ -191,11 +212,11 @@ def run_sim(player_programs):
 
             grid = state[2][1]
             bounds = state[2][0]
-            coords = grid[i][j][0]
+            # coords = grid[i][j][0]
 
             dir_py_to_hask = {'r':'East','l':'West','d':'South','u':'North'}
             dir_hask_to_py = {'East':'r','West':'l','South':'d','North':'u'} #todo dict comp (faster to not use new syntax now)
-            moves_legend_py_to_hask = {'l':'turnCW', 'r':'turnCCW', 's':'KeepGoing'}
+            moves_legend_py_to_hask = {'l':'TurnCW', 'r':'TurnCCW', 's':'KeepGoing'}
 
             # simlu updates
             moves = []
@@ -207,13 +228,16 @@ def run_sim(player_programs):
                     "player": i, 
                     "history": player_1_history,
                     "board": {tuple(k):v for (k, v) in grid},
+                    "bounds": bounds,
                     "current_direction": dir_hask_to_py[curr_dir]
                     })
 
                 print ret
                 moves.append({'contents':[], 'tag':moves_legend_py_to_hask[ret]})
 
-            engine.makeMove([move for move in moves])
+            move = [move for move in moves]
+            print json.dumps(move)
+            engine.makeMove(move)
 
             status = engine.getStatus()
             print status
@@ -243,6 +267,14 @@ def run_sim(player_programs):
     # player1.update_stats()
     # player2.update_stats()
 
+
+def match_against(filename):
+    files = [f for f in listdir(SCRIPT_PATH) if (
+        path.isfile(path.join(SCRIPT_PATH, f)) and f[0] != '.' and f != filename)]
+    a1 = itertools.repeat(filename, len(files))
+    tups = zip(a1, files)
+    print tups
+    map(run_sim, tups)
 
 if __name__ == '__main__':
     num_processes = 4 #4 total processes after each call

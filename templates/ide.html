@@ -115,6 +115,24 @@ def main(data):
     </section>  
 
     <script>
+
+        $("#script_uploader").submit(function() {
+
+            var url = "/script_upload"; // the script where you handle the form input.
+
+            $.ajax({
+                   type: "POST",
+                   url: url,
+                   data: $("#script_uploader").serialize(), // serializes the form's elements.
+                   success: function(data)
+                   {
+                        
+                   }
+                 });
+
+            return false; // avoid to execute the actual submit of the form.
+        });
+
       var textarea = document.getElementById('code');
       var editor = CodeMirror.fromTextArea(textarea, {
         mode: {name: "python",
@@ -124,6 +142,9 @@ def main(data):
         indentUnit: 4
       });
       editor.setOption("theme", "monokai");
+
+
+
     </script>
 
     <!-- jQuery -->
