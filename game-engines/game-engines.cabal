@@ -25,6 +25,7 @@ library
                      , lens-aeson
                      , mtl
                      , text
+                     , th-printf
                      , unordered-containers
   default-language:    Haskell2010
 
