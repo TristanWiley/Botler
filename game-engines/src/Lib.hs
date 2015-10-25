@@ -117,10 +117,12 @@ rockPaperScissors = Game {
 -- 2-player Tron
 data TronMove = KeepGoing | TurnCW | TurnCCW deriving Show
 data TronDirection = North | East | South | West deriving (Enum, Show)
-newtype TronCoord = TC { unTC :: (Int, Int) } deriving (Eq, A.Ix, Ord, Show)
+newtype TronCoord = TC (Int, Int) deriving (Eq, A.Ix, Ord, Show)
 newtype TronPlayer = TP (TronCoord, TronDirection) deriving Show
 newtype TronGrid = TG (A.Array TronCoord (Maybe PlayerId)) deriving Show
 data TronState = TS TronPlayer TronPlayer TronGrid deriving Show
+
+unTC (TC x) = x
 
 applyTurn :: TronMove -> TronDirection -> TronDirection
 applyTurn dir x = toEnum ((fromEnum x + f dir) `mod` 4) where
