@@ -14,7 +14,6 @@ DATA_PATH = 'player_data'
 
 # this is the horrible runtime code version
 
-
 class Player:
 
     def __init__(self, script, filepath, player_id):
@@ -87,7 +86,7 @@ def run_sim(player_programs):
 
     # stats_obj = get_player_stats(player1)
     for player in [next(cycleit) for i in range(n)]:
-        world_state = engine.get_world_state()
+        world_state = engine.getState()
         ret = player.take_turn(world_state)
         print ret
         engine.update(ret)

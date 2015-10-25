@@ -8,9 +8,8 @@ import json
 
 class Engine:
 
-    def __init__(self, program):
-        self.program = program
-
+    def __init__(self):
+    
         self.proc = subprocess.Popen('game-engines/build_and_run.sh',
                                      stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE)

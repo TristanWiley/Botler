@@ -2,6 +2,7 @@ from flask import Flask, request, session, render_template, jsonify, redirect, u
 from werkzeug import secure_filename
 #from flask.ext.socketio import SocketIO, send, emit
 from os import path, listdir
+import os
 import json
 import re
 
@@ -10,6 +11,8 @@ app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'secret!'
 app.debug = True
 app.config['UPLOAD_FOLDER'] = 'player_data'
+app.config['SCRIPTS_FOLDER'] = 'player_scripts'
+
 DATA_PATH = 'player_data'
 
 
@@ -26,6 +29,7 @@ def render_docs():
 @app.route('/upload')
 def render_upload():
     return render_template('ide.html')
+
 
 @app.route('/stats')
 def render_stats():
@@ -71,15 +75,24 @@ def get_game_stats(name):
     # facilitator.on_data(lambda x: emit('frame', {'frame': x}))
 #    pass
 
+# ffrdc
+
 
 @app.route('/script_upload', methods=['GET', 'POST'])
 def script_upload():
     if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect('/')
+        code = request.form['code']
+        game = request.form['game']
+        script_name = request.form['script_name']
+        filename = '-'.join([game, secure_filename(script_name).replace('-', '_').replace(' ', '_')]) + '.py'
+
+        with open(os.path.join(app.config['SCRIPTS_FOLDER'], filename), 'a+') as f:
+            f.seek(0)
+            f.truncate(0)
+            f.write(code)
+        
+        return redirect('/')
+
 
 if __name__ == '__main__':
     # socketio.run(app)

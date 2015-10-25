@@ -31,9 +31,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.css" />
 
     
-    <script type="text/javascript" src="../static/js/python.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
     <script src="/static/js/elastic-progress.min.js"></script>
+    <script type="text/javascript" src="/static/js/python.js"></script>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js">
      $(function() {
@@ -64,52 +64,57 @@ $('.Upload').ElasticProgress({/*options*/});
         <!-- /.container-fluid -->
     </nav>
 
-   <section class="bg-primary" id = "abouttbhlol" style="height:1000px">
-        <div class="container" >
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <h2 class="section-heading">Play Now</h2>
-                    <hr class="light">
-                    <p class="text-faded"> Welcome to the Botler IDE. The barracks before you release your code into battle.</p>
-                    <br><br>
-                    <p class="text-faded"> Below is an IDE for Botler. Specified for python, it allows you to write your code online, and test it too!</p>
-                    <br><br>
+   <section class="bg-primary" id = "abouttbhlol" style="height:2000px">
+        <form action="/script_upload" id="script_uploader", method="POST">
+            <div class="container" >
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">Play Now</h2>
+                        <hr class="light">
+                        <p class="text-faded"> Welcome to the Botler IDE; the barracks before you release your code into battle.</p>
+                        <br><br>
+                        <p class="text-faded"> Below is an IDE for Botler. Tailored for Python, it allows you to write your code online, and test it too!</p>
+                        <br><br>
 
-                    <h3 class="section-heading">IMPORTANT</h3>
-                    <p class="text-faded"> If you don't know how to format your python file, see the <a href="/docs" style="color:#FFFFFF">docs</a> </p>
-                    <br><br>
-                </div>
-                <br><br><br><br><br><br><br>
-                <br><br><br><br><br><br><br>
-                <br><br><br><br><br><br><br>
-                <div class="fluid_container">
-                    <div class="ide_container">
-                        <textarea id="code" cols="120" rows="30">
+                        <h3 class="section-heading">IMPORTANT</h3>
+                        <p class="text-faded"> If you don't know how to format your python file, see the <a href="/docs" style="color:#FFFFFF">docs</a> </p>
+                        <br><br>
+                    </div>
+                    <br><br><br><br><br><br><br>
+                    <br><br><br><br><br><br><br>
+                    <br><br><br><br><br><br><br>
+                    <div class="fluid_container">
+                        <div class="ide_container">
+                            <textarea id="code" name="code" cols="120" rows="30" form="script_uploader">
 #My awesome bot that plays games
 
 from random import choice
 
 def main(data):
     return choice(data['valid_moves'])
-                        </textarea>
-                    </div>
-                </div> 
+                            </textarea>
+                            <br>
+                            <input name="script_name" type="text" class="form-control" id="script_name" placeholder="Script Name">
+                            <br>
+                            <select name="game" form="script_uploader" class="form-control">
+                              <option value="rps">Rock Paper Scissors</option>
+                              <option value="tron">Light Cycle</option>
+                            </select>
 
-<!--                 <a class= "btn btn-primary btn-xl page-scroll prog_submit1"> Upload File </a> -->  
-              <a class = " Upload btn btn-primary btn-xl page-scroll prog_submit1" role="button" aria-label="Upload file"> Upload File</a>
+                        </div>
 
-              <a onclick = "prompt_submit()" class= "btn btn-primary btn-xl page-scroll prog_submit2"> Use this program </a>
+                    </div> 
+                    <button type="submit" class="btn btn-primary btn-xl page-scroll prog_submit1">Upload File</button>
 
-
+<!--                     <submit class = "">  </submit>
+                    <submit onclick = "prompt_submit()" class= "btn btn-primary btn-xl page-scroll prog_submit2"> Use this program </submit>
+ -->                </div>
             </div>
-        </div>
+
+        </form>
     </section>  
 
     <script>
-      function prompt_submit(){
-            var program_name = prompt("What will be the name of your bot?");
-      };
-
       var textarea = document.getElementById('code');
       var editor = CodeMirror.fromTextArea(textarea, {
         mode: {name: "python",
