@@ -8,12 +8,14 @@ import json
 
 class Engine:
 
-    def __init__(self, game):
-    
-        self.proc = subprocess.Popen('game-engines/build_and_run.sh',
+    def __init__(self, gametype):    
+        self.proc = subprocess.Popen(['game-engines/build_and_run.sh', gametype], #yeah this is secure
                                      stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE)
-        print self.proc
+
+    def __del__(self):
+        print "destroy!"
+        self.proc.terminate()
 
     def read(self):
         try:
@@ -29,13 +31,18 @@ class Engine:
         self.write('["getState"]')
         return self.read()
 
-    def checkStatus(self):
+    def getStatus(self):
         self.write('["checkStatus"]')
         return self.read()
 
     def makeMove(self, move):
+        assert isinstance(move, dict)
         self.write('["makeMove", %s]' % json.dumps(move))
         
-    def validMoves(self):
+    def getValidMoves(self):
         self.write('["validMoves"]')
         return self.read()
+
+    def reset(self):
+        self.write('["reset"]')
+

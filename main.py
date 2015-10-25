@@ -104,6 +104,8 @@ def script_upload():
         code = request.form['code']
         game = request.form['game']
         script_name = request.form['script_name']
+        if len(script_name) == 0:
+            return redirect('/')
         filename = '-'.join(
             [game, secure_filename(script_name).replace('-', '_').replace(' ', '_')]) + '.py'
 

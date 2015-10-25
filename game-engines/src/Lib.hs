@@ -70,6 +70,7 @@ gameLoop g = loop (g ^. blankState) where
                 pure (jsonLine ^? nth 0 . _String) `bindJust` \case
                     "reset" -> loop (g ^. blankState)
                     "getState" -> emit state >> loop state
+                    "renderState" -> emit ((g ^. renderState) state) >> loop state
                     "checkStatus" -> emit ((g ^. checkStatus) state) >> loop state
                     "makeMove" -> pure (jsonLine ^? nth 1 . _JSON) `bindJust` \(move :: m) ->
                         pure ((g ^. makeMove) move state) >>= maybe (loop state) loop
@@ -108,7 +109,7 @@ rockPaperScissors = Game {
         ZeroProvided -> Just $ OneProvided m
         OneProvided m1 -> Just $ TwoProvided m1 m
         TwoProvided _ _ -> Nothing,
-    _renderState = T.pack . show, -- TODO: SVG
+    _renderState = \x -> "<svg width='100' height='50'><text x='0' y='25' fill='black'>" <> T.pack (show x) <> "</text></svg>",
     _validMoves = \case
         TwoProvided _ _ -> []
         _ -> [Rock, Paper, Scissors]

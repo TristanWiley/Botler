@@ -14,7 +14,7 @@ DATA_PATH = 'player_data'
 
 # this is the horrible runtime code version
 
-class Player:
+class UserScript:
 
     def __init__(self, script, filepath, player_id):
         try:
@@ -80,39 +80,74 @@ def create_sandbox(path, filename):
     # horrible brittle regexy piece of shit.
     filepath = os.path.join(path, filename)
     with open(filepath, "r") as f:
-        return Player(f.read(),filepath, filename)
+        return UserScript(f.read(), filepath, filename)
 
 
 def run_sim(player_programs):
+    print "playing", player_programs[0], "against", player_programs[1]
+    n = 10 # number of games
 
-    #game_type = re.search('([a-z]*)', player_programs[0]).group(0)  # ugh
-    p1_game_type = player_programs[0].split('-')[0] #get the game by getting the prefix variable
-    p2_game_type = player_programs[1].split('-')[0] #get the game by getting the prefix variable
-    
-    if p1_game_type != p2_game_type:
-        return None
-
-    n = 10 #number of games
+    game_type = player_programs[0].split('-')[0]
 
     player1 = create_sandbox(SCRIPT_PATH, player_programs[0])
     player2 = create_sandbox(SCRIPT_PATH, player_programs[1])
     #creates player object for each challenger
-
-    cycleit = itertools.cycle([player1, player2])
+    players = [player1, player2]
+    cycleit = itertools.cycle([0, 1])
     #cycle object to iterate between p1 and p2
 
-    engine = Engine(p1_game_type)
+    engine = Engine(game_type)
+    
     #game engine object with game type entered
+    player_1_history = []
+    player_2_history = []
 
     # stats_obj = get_player_stats(player1)
-    for player in [next(cycleit) for i in range(n)]:
+    rps_mapping = {'r':"Rock", 'p':'Paper', 's':"Scissors"}
+
+
+    for player_id in [next(cycleit) for i in range(n)]:
+        current_player = players[player_id]
+
         world_state = engine.getState()
-        try:
-            ret = player.take_turn(world_state)
-            print ret
-            engine.update(ret)
-        except:
-            break
+        print world_state
+
+        valid_moves = engine.getValidMoves()
+
+        # try:
+        #     if game_type == 'rps':
+        #         ret = player.take_turn({"valid_moves": valid_moves, "player": 1, "history": player_1_history})
+        #         engine.makeMove({'contents': [], 'tag': rps_mapping[ret]})
+        #         status = engine.getStatus()
+
+        #         if status['tag'] == 'PlayerWin' and status['contents'] == 1:
+        #             print "player wins"
+        #             players[1].win()
+        #             players[0].lose()
+        #             engine.reset()
+        #             break
+                
+        #         if status['tag'] == 'Player' and status['contents'] == 0:
+        #             players[1].lose()
+        #             players[0].win()
+        #             engine.reset()
+        #             break
+
+        #         if status['tag'] == 'Drawn':
+        #             players[1].tie()
+        #             players[0].tie()
+        #             engine.reset()
+        #             break
+
+        #     elif game_type == 'tron':
+        #         pass
+        #         # ret = player.take_turn({"valid_moves": valid_moves, "player": 1, "history": player_2_history})
+        #         # engine.makeMove({'contents': [], 'tag': rps_mapping[ret]})
+
+        #     print ret
+            
+        # except:
+        #     break
     player1.update_stats()
     player2.update_stats()
 
@@ -122,14 +157,10 @@ if __name__ == '__main__':
     
     p = Pool(num_processes)
 
-    files = []
-    for f in listdir(SCRIPT_PATH):
-        if (path.isfile(path.join(SCRIPT_PATH, f)) and f[0] != '.'):
-            files.append(f)
-    #iterate through the scripts, if the files exists, add it to a general list
-
-    matches = [m for m in itertools.combinations(files, r=2)]
-    #generate tuple pairs of files
-
+    files = [f for f in listdir(SCRIPT_PATH) if (
+        path.isfile(path.join(SCRIPT_PATH, f)) and f[0] != '.')]
+    matches = [m for m in itertools.combinations(files, r=2) ]
+    matches = filter(lambda m: m[0].split('-')[0] == m[1].split('-')[0], matches)
+    print matches
     print(map(run_sim, matches))  # todo: switch to p.map after debug
     #stdout each match with run_sim function
