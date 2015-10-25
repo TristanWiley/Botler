@@ -176,12 +176,23 @@ cat foo.svg | sed 's#\([^\]\)"#\1#g' | sed 's#^"##g' | sed 's#\\"#"#g' > fooprim
         playerColor _ = "rgb(128,128,128)" -- shouldn't happen, but define something visible to be safe
         mkStyle :: T.Text -> Float -> T.Text
         mkStyle = [st|style='fill:%s;stroke:black;stroke-width:2;fill-opacity:%f'|]
+        northTri = [(0,cellSize), (cellSize',0), (cellSize, cellSize)]
+        flipX = map (\(x, y) -> (cellSize-x, y))
+        flipY = map (\(x, y) -> (x, cellSize-y))
+        flipXY = map (\(x, y) -> (y, x))
+        translate (dx, dy) = map (\(x, y) -> (x+dx, y+dy))
+        mkTri North = northTri
+        mkTri South = flipY northTri
+        mkTri East = flipX . flipXY $ northTri
+        mkTri West = flipXY $ northTri
         renderCell (TC (x,y), Nothing) = [st|<rect x="%d" y="%d" width="%d" height="%d" %s />|]
             (x*cellSize) (y*cellSize) cellSize cellSize (mkStyle "white" 1.0)
         renderCell (TC (x,y), Just i) = [st|<rect x="%d" y="%d" width="%d" height="%d" %s />|]
             (x*cellSize) (y*cellSize) cellSize cellSize (mkStyle (playerColor i) 0.5)
-        renderPlayer (TP (TC (x,y), dir)) i = [st|<circle cx="%d" cy="%d" r="%d" %s />|]
-            (x*cellSize + cellSize') (y*cellSize + cellSize') cellSize' (mkStyle (playerColor i) 1)
+        --renderPlayer (TP (TC (x,y), dir)) i = [st|<circle cx="%d" cy="%d" r="%d" %s />|]
+        --    (x*cellSize + cellSize') (y*cellSize + cellSize') cellSize' (mkStyle (playerColor i) 1)
+        renderPlayer (TP (TC (x,y), dir)) i = [st|<polygon points="%s" %s />|]
+            (mconcat . map (uncurry [st|%d,%d |]) . translate (x*cellSize, y*cellSize) $ mkTri dir) (mkStyle (playerColor i) 1)
         playerData = renderPlayer p1 0 <> renderPlayer p2 1
         in header <> foldMap renderCell (A.assocs board) <> playerData <> footer
         ,
