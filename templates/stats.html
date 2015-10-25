@@ -25,7 +25,14 @@
 
     <script type="text/javascript" src="/static/js/Chart.min.js"></script>
 
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <script src="/static/js/jquery.js"></script>
+
+    <link rel="stylesheet" href="http://github.hubspot.com/odometer/themes/odometer-theme-car.css" />
+    <script src="http://github.hubspot.com/odometer/odometer.js"></script>
+
+
+    <script>
 	 $(function() {
        $("#upload_button1").click(function() { 
            $("#file_upload1").click();
@@ -82,7 +89,20 @@
                         <i class="fa fa-4x fa-scissors wow bounceIn text-primary"></i>
                     <h3>Rock, Paper, Scissors</h3>
                     </div>
-                    <canvas id="rps" width="300" height="300"></canvas>
+                    <canvas id="rps" width="500" height="300"></canvas>
+                    <div class="service-box">
+                        <p class="text-faded" style="color:black;"> Number of Active Programs </p>
+                    </div>
+
+                    <div class="service-box">
+                        <p class="text-faded" style="color:gray;"> Total Games Played </p>
+                        <div id="odometer" class="odometer">0</div>
+                    </div>
+
+                    <div class="service-box">
+                        <p class="text-faded" style="color:gray;"> Total Players </p>
+                        <div id="odometer" class="odometer">0</div>
+                    </div>
                 </div>                
             </div>
             <div class="col">
@@ -91,7 +111,20 @@
                         <i class="fa fa-4x fa-motorcycle wow bounceIn text-primary"></i>
                     <h3>Light Cycle</h3>
                     </div>
-                    <canvas id="light-cycle" width="300" height="300"></canvas>
+                    <canvas id="light-cycle" width="500" height="300"></canvas>
+                    <div class="service-box">
+                        <p class="text-faded" style="color:black;"> Number of Active Programs </p>
+                    </div>
+                    
+                    <div class="service-box">
+                        <p class="text-faded" style="color:gray;"> Total Games Played </p>
+                        <div id="odometer" class="odometer">0</div>
+                    </div>
+
+                    <div class="service-box">
+                        <p class="text-faded" style="color:gray;"> Total Players </p>
+                        <div id="odometer" class="odometer">0</div>
+                    </div>
                 </div>                
             </div>
         </div>
@@ -99,19 +132,19 @@
 
     <script>
         var rps_data = {
-            labels : ["January","February","March","April","May","June"],
+            labels : ["|","|","|","|","|","|","|","|","|","|"],
             datasets : [
                 {
                     fillColor : "rgba(172,194,132,0.4)",
                     strokeColor : "#ACC26D",
                     pointColor : "#fff",
                     pointStrokeColor : "#9DB86D",
-                    data : [203,156,99,251,305,247]
+                    data : [300,300,200,200,100,300,200,200]
                 }
             ]
         }
         var light_cycle_data = {
-            labels : ["January","February","March","April","May","June"],
+            labels : ["|","|","|","|","|","|","|","|","|","|"],
             datasets : [
                 {
                     fillColor : "rgba(172,194,132,0.4)",
@@ -122,18 +155,19 @@
                 }
             ]
         }
+
+        //$.get( "/", function( data ) {
+        //  alert( "Data Loaded: " + data );
+        //});
     </script>
 
     <script>
-    var rps = document.getElementById('rps').getContext('2d');
-    new Chart(rps).Line(rps_data);
+        var rps = document.getElementById('rps').getContext('2d');
+        new Chart(rps).Line(rps_data);
 
-    var lc = document.getElementById('light-cycle').getContext('2d');
-    new Chart(lc).Line(light_cycle_data);
+        var lc = document.getElementById('light-cycle').getContext('2d');
+        new Chart(lc).Line(light_cycle_data);
     </script>
-
-    <!-- jQuery -->
-    <script src="/static/js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/static/js/bootstrap.min.js"></script>

@@ -32,7 +32,16 @@
 
     
     <script type="text/javascript" src="../static/js/python.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+    <script src="/static/js/elastic-progress.min.js"></script>
 
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js">
+     $(function() {
+
+$('.Upload').ElasticProgress({/*options*/});
+
+             });
+        </script>
 </head>
 
 <body id="page-top">
@@ -86,8 +95,10 @@ def main(data):
                     </div>
                 </div> 
 
-                <a class= "btn btn-primary btn-xl page-scroll prog_submit1"> Upload File </a>
-                <a onclick = "prompt_submit()" class= "btn btn-primary btn-xl page-scroll prog_submit2"> Use this program </a>
+<!--                 <a class= "btn btn-primary btn-xl page-scroll prog_submit1"> Upload File </a> -->  
+              <a class = " Upload btn btn-primary btn-xl page-scroll prog_submit1" role="button" aria-label="Upload file"> Upload File</a>
+
+              <a onclick = "prompt_submit()" class= "btn btn-primary btn-xl page-scroll prog_submit2"> Use this program </a>
 
 
             </div>
