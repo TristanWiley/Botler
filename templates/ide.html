@@ -125,13 +125,17 @@ def main(data):
     </section>  
 
     <script>
+        function hackyTrigger(socket) {
+            socket.emit('simstart', { script_name: 'random', game_name: 'tron' });    
+        }
 
         var socket = io.connect('http://' + document.domain + ':' + location.port);
         socket.on('connect', function() {
             document.getElementById("runsim").onclick = function(){
-                alert($('#game_select').val())
+                // alert($('#game_select').val())
                 socket.emit('simstart', { script_name: $('#script_name').val(), game_name: $('#game_select').val() });    
             }
+            hackyTrigger(socket);
             // $("#runsim").on('click', function(e){
             // })
             
@@ -154,6 +158,7 @@ def main(data):
                 },100)
             }
             ren()
+            hackyTrigger(socket);
             // for(svg in svgbuff){
                 // console.log("SVG", svgbuff[svg])
                 // $("#gamescreen").html(svgbuff[svg]);
