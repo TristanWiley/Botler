@@ -96,12 +96,12 @@
 
                     <div class="service-box">
                         <p class="text-faded" style="color:gray;"> Total Games Played </p>
-                        <div id="odometer" class="odometer">0</div>
+                        <div id="odometer" class="odometer">327</div>
                     </div>
 
                     <div class="service-box">
                         <p class="text-faded" style="color:gray;"> Total Players </p>
-                        <div id="odometer" class="odometer">0</div>
+                        <div id="odometer" class="odometer">10</div>
                     </div>
                 </div>                
             </div>
@@ -118,56 +118,17 @@
                     
                     <div class="service-box">
                         <p class="text-faded" style="color:gray;"> Total Games Played </p>
-                        <div id="odometer" class="odometer">0</div>
+                        <div id="odometer" class="odometer">230</div>
                     </div>
 
                     <div class="service-box">
                         <p class="text-faded" style="color:gray;"> Total Players </p>
-                        <div id="odometer" class="odometer">0</div>
+                        <div id="odometer" class="odometer">6</div>
                     </div>
                 </div>                
             </div>
         </div>
     </section>
-
-    <script>
-        var rps_data = {
-            labels : ["|","|","|","|","|","|","|","|","|","|"],
-            datasets : [
-                {
-                    fillColor : "rgba(172,194,132,0.4)",
-                    strokeColor : "#ACC26D",
-                    pointColor : "#fff",
-                    pointStrokeColor : "#9DB86D",
-                    data : [300,300,200,200,100,300,200,200]
-                }
-            ]
-        }
-        var light_cycle_data = {
-            labels : ["|","|","|","|","|","|","|","|","|","|"],
-            datasets : [
-                {
-                    fillColor : "rgba(172,194,132,0.4)",
-                    strokeColor : "#ACC26D",
-                    pointColor : "#fff",
-                    pointStrokeColor : "#9DB86D",
-                    data : [203,156,99,251,305,247]
-                }
-            ]
-        }
-
-        //$.get( "/", function( data ) {
-        //  alert( "Data Loaded: " + data );
-        //});
-    </script>
-
-    <script>
-        var rps = document.getElementById('rps').getContext('2d');
-        new Chart(rps).Line(rps_data);
-
-        var lc = document.getElementById('light-cycle').getContext('2d');
-        new Chart(lc).Line(light_cycle_data);
-    </script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/static/js/bootstrap.min.js"></script>
@@ -179,6 +140,42 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="/static/js/creative.js"></script>
+
+    <script>
+        var rps_data = {
+            "labels" : ["|","|","|","|","|","|","|","|","|","|"],
+            "datasets" : [
+                {
+                    "fillColor" : "rgba(172,194,132,0.4)",
+                    "strokeColor" : "#ACC26D",
+                    "pointColor" : "#fff",
+                    "pointStrokeColor" : "#9DB86D",
+                    "data" : [8,8,8,9,9,9,10]
+                }
+            ]
+        }
+        var light_cycle_data = {
+            labels : ["|","|","|","|","|","|","|","|","|","|"],
+            datasets : [
+                {
+                    fillColor : "rgba(172,194,132,0.4)",
+                    strokeColor : "#ACC26D",
+                    pointColor : "#fff",
+                    pointStrokeColor : "#9DB86D",
+                    data : [5,5,5,5,6,6,6,6]
+                }
+            ]
+        }
+        var rps = document.getElementById('rps').getContext('2d');
+        new Chart(rps).Line(rps_data);
+
+        var lc = document.getElementById('light-cycle').getContext('2d');
+        new Chart(lc).Line(light_cycle_data);
+        //$.get( "/api/gamestats/", {"name":"rps"}, function( data ) {
+        //  //data change with time
+        //});
+    </script>
+
 
 </body>
 
