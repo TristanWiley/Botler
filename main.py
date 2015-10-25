@@ -46,6 +46,14 @@ def get_stats(name):
                 return Response(response=f.read(), status=200, mimetype="application/json")
     return Response(response="{}", status=200, mimetype="application/json")
 
+
+@app.route('/api/stats/bots')
+def get_num_bots(name):
+    num_bots = len(listdir(DATA_PATH))
+    return Response(response=num_bots, status=200, mimetype="application/json")
+
+
+
 @app.route('/api/stats/fake')
 def fake_stats():
     return Response(response=json.dumps(

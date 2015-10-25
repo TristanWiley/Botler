@@ -125,25 +125,21 @@
       	<div>
             <h2 class="section-heading" style = "color:#FFFFFF ; font-weight:300 ; text-align: center; font-size:36px; "> Botler Live Stats </h2>
 
-            <input name="script_name" type="text" class="form-control" id="script_name" placeholder="Script Name">
+            <br><br>
 
-            <a id="get_stats" class= "btn btn-primary btn-xl page-scroll"> Get Stats </a>
-
-            <div id="thing" style="color:white">Things</div>
+            <div class="form-inline" style="margin-left:20px">
+                <input name="script_name" type="text" class="form-control" id="script" placeholder="Script Name" style="width:170px">
+                <a id="get_stats" class= "btn btn-primary btn-xl page-scroll" style="height:34px;padding: 8px 10px"> Get Stats </a>
+            </div>
+            <div id="thing" style="color:white;visibility: hidden;height:1px"></div>
         </div>
     </section>
 
     <script>
-        //document.getElementById("get_stats").onclick = function () {
-        //    alert("AKJsfsda");
-        //    val url = "botler.cloudapp.net/api/stats/"+document.getElementById("script_name").value;
-        //    $("#thing").load(url, null, null).show("slow");
-        //};
-        alert("SDSHF");
-        $("#thing").load("localhost:5000/api/stats/bias_rock", function {
-            alert("SDFKSHF"); 
-            alert(response.html);
-        });
+        document.getElementById("get_stats").onclick  = function () {
+            var input = document.getElementById("script").value;
+            $("#thing").load("http://localhost:5000/api/stats/"+input)
+        }
     </script>
 
     <section id="contact">
