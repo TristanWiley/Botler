@@ -14,6 +14,7 @@ import Data.Aeson
 import Data.Aeson.Lens
 import Data.Char
 import Data.Conduit
+import Data.Maybe
 import Data.Monoid
 import System.IO
 import qualified Data.Array as A
@@ -105,12 +106,12 @@ rockPaperScissors = Game {
 deriveAllJSONs [''RPSMove, ''RPSState]
 
 -- 2-player Tron
-data TronMove = KeepGoing | TurnCW | TurnCCW
+data TronMove = KeepGoing | TurnCW | TurnCCW deriving Show
 data TronDirection = North | East | South | West deriving (Enum, Show)
 type TronCoord = (Int, Int)
 type TronPlayer = (TronCoord, TronDirection)
 type TronGrid = A.Array TronCoord (Maybe PlayerId)
-data TronState = TS TronPlayer TronPlayer TronGrid
+data TronState = TS TronPlayer TronPlayer TronGrid deriving Show
 
 applyTurn :: TronMove -> TronDirection -> TronDirection
 applyTurn dir x = toEnum ((fromEnum x + f dir) `mod` 4) where
@@ -123,14 +124,29 @@ getDelta East  = ( 1, 0)
 
 updatePosition (x,y) dir = let (dx, dy) = getDelta dir in (x+dx, y+dy)
 
-{-
+tronCheckStatus (TS (p1,d1) (p2,d2) board) = let
+    [alive1, alive2] = map (isNothing . (board A.!)) [p1,p2]
+    in case (alive1, alive2) of
+        (True,True) -> CurrentTurn 0
+        (True,False) -> PlayerWin 0
+        (False,True) -> PlayerWin 1
+        (False,False) -> Drawn
+
 tronBikeGame :: TronCoord -> Game TronState (TronMove, TronMove)
 tronBikeGame size@(width, height) = Game {
-    _blankState = TS ((0,0), South) (size, North) (listArray ((0,0),size) (repeat Nothing)),
+    _blankState = TS ((0,0), South) (size, North) (A.listArray ((0,0),size) (repeat Nothing)),
     _checkStatus = tronCheckStatus,
-    _makeMove = \(m1,m2) (TS p1
+    _makeMove = \(m1,m2) state@(TS (p1,d1) (p2,d2) board) -> case tronCheckStatus state of
+        CurrentTurn _ -> let
+            [d1', d2'] = zipWith applyTurn [m1,m2] [d1,d2]
+            [p1', p2'] = zipWith updatePosition [p1, p2] [d1', d2']
+            in Just (TS (p1',d1') (p2', d2') (board A.// [(p1,Just 0), (p2,Just 1)]))
+        _ -> Nothing,
+    _renderState = T.pack . show, -- TODO: SVG
+    _validMoves = \state -> case tronCheckStatus state of
+        CurrentTurn _ -> (liftA2 (,) <*> id) [KeepGoing, TurnCW, TurnCCW]
+        _ -> []
     }
--}
 
 -- 2-player Tic-Tac-Toe
 data TTTMove = A0 | A1 | A2|
