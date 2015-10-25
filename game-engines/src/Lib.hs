@@ -3,6 +3,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Lib where
@@ -18,9 +19,9 @@ import Data.Conduit
 import Data.List(intercalate)
 import Data.Maybe
 import Data.Monoid
-import System.IO
 import System.Environment
-import qualified Data.Array as A
+import System.IO
+import Text.Printf.TH
 import qualified Data.Aeson.TH as AT
 import qualified Data.Array as A
 import qualified Data.ByteString as B
@@ -155,7 +156,31 @@ tronBikeGame size@(width, height) = Game {
             [p1', p2'] = zipWith updatePosition [p1, p2] [d1', d2']
             in Just (TS (TP (p1',d1')) (TP (p2', d2')) (TG (board A.// [(p1,Just 0), (p2,Just 1)])))
         _ -> Nothing,
-    _renderState = T.pack . show, -- TODO: SVG
+    _renderState = \(TS p1 p2 (TG board)) -> let
+{-
+(echo '["renderState"]' | ./build_and_run.sh tron) > foo.svg
+(python -c 'print """["makeMove", [{"tag":"KeepGoing","contents":[]},{"tag":"KeepGoing","contents":[]}]]\n"""*2 + """["renderState"]"""' | ./build_and_run.sh tron) > foo.svg
+cat foo.svg | sed 's#\([^\]\)"#\1#g' | sed 's#^"##g' | sed 's#\\"#"#g' > fooprime.svg
+-}
+        cellSize = 32
+        cellSize' = cellSize `div` 2
+        header = [st|<svg width="%d" height="%d">|] (cellSize*(width+1)) (cellSize*(height+1))
+        footer = [st|</svg>|]
+        playerColor :: PlayerId -> T.Text
+        playerColor 0 = "rgb(255,128,0)"
+        playerColor 1 = "rgb(0,0,255)"
+        playerColor _ = "rgb(128,128,128)" -- shouldn't happen, but define something visible to be safe
+        mkStyle :: T.Text -> Float -> T.Text
+        mkStyle = [st|style='fill:%s;stroke=black;stroke-width=6;fill-opacity:%f'|]
+        renderCell (TC (x,y), Nothing) = [st|<rect x="%d" y="%d" width="%d" height="%d" %s />|]
+            (x*cellSize) (y*cellSize) cellSize cellSize (mkStyle "white" 1.0)
+        renderCell (TC (x,y), Just i) = [st|<rect x="%d" y="%d" width="%d" height="%d" %s />|]
+            (x*cellSize) (y*cellSize) cellSize cellSize (mkStyle (playerColor i) 0.5)
+        renderPlayer (TP (TC (x,y), dir)) i = [st|<circle cx="%d" cy="%d" r="%d" %s />|]
+            (x*cellSize + cellSize') (y*cellSize + cellSize') cellSize' (mkStyle (playerColor i) 1)
+        playerData = renderPlayer p1 0 <> renderPlayer p2 1
+        in header <> foldMap renderCell (A.assocs board) <> playerData <> footer
+        ,
     _validMoves = \state -> case tronCheckStatus state of
         CurrentTurn _ -> (liftA2 (,) <*> id) [KeepGoing, TurnCW, TurnCCW]
         _ -> []
