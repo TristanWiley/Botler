@@ -82,7 +82,7 @@
                         <i class="fa fa-4x fa-scissors wow bounceIn text-primary"></i>
                     <h3>Rock, Paper, Scissors</h3>
                     </div>
-                    <canvas id="skills" width="300" height="300"></canvas>
+                    <canvas id="rps" width="300" height="300"></canvas>
                 </div>                
             </div>
             <div class="col">
@@ -91,38 +91,45 @@
                         <i class="fa fa-4x fa-motorcycle wow bounceIn text-primary"></i>
                     <h3>Light Cycle</h3>
                     </div>
-                    <canvas id="skills" width="300" height="300"></canvas>
+                    <canvas id="light-cycle" width="300" height="300"></canvas>
                 </div>                
             </div>
         </div>
     </section>
-    
 
     <script>
-        var data = {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            datasets: [
+        var rps_data = {
+            labels : ["January","February","March","April","May","June"],
+            datasets : [
                 {
-                    label: "My First dataset",
-                    fillColor: "rgba(220,220,220,0.5)",
-                    strokeColor: "rgba(220,220,220,0.8)",
-                    highlightFill: "rgba(220,220,220,0.75)",
-                    highlightStroke: "rgba(220,220,220,1)",
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: "My Second dataset",
-                    fillColor: "rgba(151,187,205,0.5)",
-                    strokeColor: "rgba(151,187,205,0.8)",
-                    highlightFill: "rgba(151,187,205,0.75)",
-                    highlightStroke: "rgba(151,187,205,1)",
-                    data: [28, 48, 40, 19, 86, 27, 90]
+                    fillColor : "rgba(172,194,132,0.4)",
+                    strokeColor : "#ACC26D",
+                    pointColor : "#fff",
+                    pointStrokeColor : "#9DB86D",
+                    data : [203,156,99,251,305,247]
                 }
             ]
-        };
-        var myBarChart = new Chart(ctx).Bar(data, options);
-        var context = document.getElementById('skills').getContext('2d');
-        var skillsChart = new Chart(context).Pie(pieData);
+        }
+        var light_cycle_data = {
+            labels : ["January","February","March","April","May","June"],
+            datasets : [
+                {
+                    fillColor : "rgba(172,194,132,0.4)",
+                    strokeColor : "#ACC26D",
+                    pointColor : "#fff",
+                    pointStrokeColor : "#9DB86D",
+                    data : [203,156,99,251,305,247]
+                }
+            ]
+        }
+    </script>
+
+    <script>
+    var rps = document.getElementById('rps').getContext('2d');
+    new Chart(rps).Line(rps_data);
+
+    var lc = document.getElementById('light-cycle').getContext('2d');
+    new Chart(lc).Line(light_cycle_data);
     </script>
 
     <!-- jQuery -->

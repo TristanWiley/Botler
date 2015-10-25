@@ -88,12 +88,18 @@
                     <p class="text-faded "> Sample:</p>
                     <pre class="prettyprint code_formatted" style="width:260px;margin-left:33%">
     {
-    "valid_moves":["r","p","s"]
+    "player":1,
+    "valid_moves":["r","p","s"],
     "history":[0,1,1,0,2,1,2,2]
     }
                     </pre>
 
                     <br>
+                    <div class="row">
+                        <pre class="prettyprint code_formatted_tiny" style="width:auto;margin-left:140px">"player"</pre>
+                        <p class="text-faded input_description" style="padding-left:5px"> will indicate to the bot which player it is</p>
+                    </div>
+
                     <div class="row">
                         <pre class="prettyprint code_formatted_tiny" style="width:auto">"valid_moves"</pre>
                         <p class="text-faded input_description" style="padding-left:5px"> will contain a list of the valid return values the bots can return</p>
@@ -132,6 +138,7 @@
                     <p class="text-faded "> Sample:</p>
                     <pre class="prettyprint code_formatted" style="width:260px;margin-left:33%">
     {
+    "player":1
     "valid_moves":["l","r","s"],
     "board_size":{
         "x":10,
