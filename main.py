@@ -48,7 +48,7 @@ def get_stats(name):
 
 
 @app.route('/api/stats/bots')
-def get_num_bots(name):
+def get_num_bots():
     num_bots = len(listdir(DATA_PATH))
     return Response(response=num_bots, status=200, mimetype="application/json")
 
