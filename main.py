@@ -5,6 +5,7 @@ from os import path, listdir
 import os
 import json
 import re
+import random
 
 app = Flask(__name__, static_url_path='/static')
 #socketio = SocketIO(app)
@@ -40,6 +41,15 @@ def render_stats():
 def get_stats(name):
     with open(path.join(DATA_PATH, name + ".json")) as f:
         return Response(response=f.read(), status=200, mimetype="application/json")
+
+
+@app.route('/api/stats/fake')
+def fake_stats():
+    return Response(response=json.dumps(
+        {'wins': random.randint(0, 10), 
+        'losses': random.randint(0, 10), 
+        'ties': random.randint(0, 10)}
+        ), status=200, mimetype="application/json")
 
 
 @app.route('/api/gamestats/<name>')
@@ -84,13 +94,14 @@ def script_upload():
         code = request.form['code']
         game = request.form['game']
         script_name = request.form['script_name']
-        filename = '-'.join([game, secure_filename(script_name).replace('-', '_').replace(' ', '_')]) + '.py'
+        filename = '-'.join(
+            [game, secure_filename(script_name).replace('-', '_').replace(' ', '_')]) + '.py'
 
         with open(os.path.join(app.config['SCRIPTS_FOLDER'], filename), 'a+') as f:
             f.seek(0)
             f.truncate(0)
             f.write(code)
-        
+
         return redirect('/')
 
 
