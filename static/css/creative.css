@@ -504,10 +504,21 @@ body {
     margin-left: 260px;
 }
 
-.prog_submit {
+.prog_submit1 {
     background-color: #FFFFFF;
     color:#f05f40;
     position:absolute;
-    margin-left: 512px;
+    margin-left: 312px;
     margin-top: 50px;
+}
+
+.prog_submit2 {
+    background-color: #FFFFFF;
+    color:#f05f40;
+    position:absolute;
+    margin-left: 712px;
+    margin-top: 50px;
+}
+
+.stat_format {
 }

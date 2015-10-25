@@ -21,6 +21,9 @@
 
     <!-- CSS STUFF AND THINGS-->
     <link rel="stylesheet" href="/static/css/creative.css" type="text/css">
+    <script src="/static/js/creative.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="/static/js/Chart.min.js"></script>
 
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js">
 	 $(function() {
@@ -34,9 +37,6 @@
        });
    });
 		</script>
-	
-
-    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 </head>
 
 <body id="page-top">
@@ -59,40 +59,71 @@
         <!-- /.container-fluid -->
     </nav>
 
-   <section class="bg-primary" id = "abouttbhlol">
+   <section class="bg-primary" id = "abouttbhlol" style="height:300px">
         <div class="container" >
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <h2 class="section-heading">Documentation</h2>
+                    <h2 class="section-heading">Stats</h2>
                     <hr class="light">
-                    <p class="text-faded"> Welcome to the Botler Documentation!</p>
-                    <br><br>
-                    <p class="text-faded"> In these docs you will learn about the games we have available and how your program will interact in the gaming arena</p>
-
-                    <br><br>
-
-                    <h3 class="section-heading">Games</h3>
-                    <p class="text-faded"> Botler currently supportes two games for a programmer to code for. These two games are Rock,Paper,Scissors, and LightBike. (We plan to do more in the future) </p>
-
-                    <br><br><br><br>
-
+                    <p class="text-faded"> Welcome to the Botler Stat Menu!</p>
                     <br>
-                    <div class="row">
-                        <pre class="prettyprint code_formatted_tiny" style="width:auto">"valid_moves"</pre>
-                        <p class="text-faded input_description" style="padding-left:5px"> will contain a list of the valid return values the bots can return</p>
-                    </div>
-
-                    <div class="container-fluid">
-                        <pre class="prettyprint code_formatted_tiny">"history"</pre>
-                        <p class="text-faded input_description"> will contain a list of the history of wins and ties</p>
-                        <br>
-                    </div>
+                    <p class="text-faded"> On this page we display the current statistics of our games</p>
                 </div>
+
             </div>
         </div>
     </section>
 
+    <section id="services">
+        <div class="container">
+            <div class="col">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="stat_format">
+                        <i class="fa fa-4x fa-scissors wow bounceIn text-primary"></i>
+                    <h3>Rock, Paper, Scissors</h3>
+                    </div>
+                    <canvas id="skills" width="300" height="300"></canvas>
+                </div>                
+            </div>
+            <div class="col">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="stat_format">
+                        <i class="fa fa-4x fa-motorcycle wow bounceIn text-primary"></i>
+                    <h3>Light Cycle</h3>
+                    </div>
+                    <canvas id="skills" width="300" height="300"></canvas>
+                </div>                
+            </div>
+        </div>
+    </section>
+    
 
+    <script>
+        var data = {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [
+                {
+                    label: "My First dataset",
+                    fillColor: "rgba(220,220,220,0.5)",
+                    strokeColor: "rgba(220,220,220,0.8)",
+                    highlightFill: "rgba(220,220,220,0.75)",
+                    highlightStroke: "rgba(220,220,220,1)",
+                    data: [65, 59, 80, 81, 56, 55, 40]
+                },
+                {
+                    label: "My Second dataset",
+                    fillColor: "rgba(151,187,205,0.5)",
+                    strokeColor: "rgba(151,187,205,0.8)",
+                    highlightFill: "rgba(151,187,205,0.75)",
+                    highlightStroke: "rgba(151,187,205,1)",
+                    data: [28, 48, 40, 19, 86, 27, 90]
+                }
+            ]
+        };
+        var myBarChart = new Chart(ctx).Bar(data, options);
+        var context = document.getElementById('skills').getContext('2d');
+        var skillsChart = new Chart(context).Pie(pieData);
+    </script>
 
     <!-- jQuery -->
     <script src="/static/js/jquery.js"></script>

@@ -27,6 +27,10 @@ def render_docs():
 def render_upload():
     return render_template('ide.html')
 
+@app.route('/stats')
+def render_stats():
+    return render_template('stats.html')
+
 
 @app.route('/api/stats/<name>')
 def get_stats(name):
