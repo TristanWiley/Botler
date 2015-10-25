@@ -124,31 +124,33 @@
     </section>
 
     <!-- Project Category was here tbh -->
-	<section id="portfolio" class="bg-dark"> 
-      	<div>
-            <h2 class="section-heading" style = "color:#FFFFFF ; font-weight:300 ; text-align: center; font-size:36px; "> Botler Live Stats </h2>
+	<section id="portfolio" class="bg-dark">
+        <div class="container"> 
+          	<div class="row">
+                <h2 class="section-heading" style = "color:#FFFFFF ; font-weight:300 ; text-align: center; font-size:36px; "> Botler Live Stats </h2>
 
-            <br><br>
+                <br><br>
 
-            <div class="form-inline" style="margin-left:485px">
-                <input name="script_name" type="text" class="form-control" id="script" placeholder="Script Name" style="width:170px">
-                <a id="get_stats" class= "btn btn-primary btn-xl page-scroll" style="height:34px;padding: 8px 10px"> Get Stats </a>
+                <div class="form-inline" style="margin-left:485px">
+                    <input name="script_name" type="text" class="form-control" id="script" placeholder="Script Name" style="width:170px">
+                    <a id="get_stats" class= "btn btn-primary btn-xl page-scroll" style="height:34px;padding: 8px 10px"> Get Stats </a>
+                </div>
+                <div id="thing" style="color:white;visibility: hidden;height:1px"></div>
             </div>
-            <div id="thing" style="color:white;visibility: hidden;height:1px"></div>
+
+            <div class="form-inline script-stat" style="margin-left:470px">
+                <canvas id="script_stats" style="margin-top:50px;"></canvas>
+                <div class="script-nums1" style="margin-left:90px">
+                    <h2></h2>
+                </div>
+                <div class="script-nums2" style="margin-left:90px">
+                    <h2></h2>
+                </div>
+                <div class="script-nums3" style="margin-left:90px">
+                    <h2></h2>
+                </div>
+            </div>
         </div>
-
-        <div class="form-inline script-stat" style="margin-left:470px">
-            <canvas id="script_stats" style="margin-top:50px;"></canvas>
-            <div class="script-nums1" style="margin-left:90px">
-                <h2></h2>
-            </div>
-            <div class="script-nums2" style="margin-left:90px">
-                <h2></h2>
-            </div>
-            <div class="script-nums3" style="margin-left:90px">
-                <h2></h2>
-            </div>
-        <div>
     </section>
 
     
@@ -185,12 +187,15 @@
             $.get( "/api/stats/"+input, function( data ) {
               console.log(data);
 
-              //pieData[0].value = data.wins;
-              //pieData[1].value = data.Losses;
-              //pieData[2].value = data.ties;
-              skillsChart.segments[0].value = data.wins;
-              skillsChart.segments[1].value = data.Losses;
-              skillsChart.segments[2].value = data.ties;
+              skillsChart.destroy();
+
+
+              pieData[0].value = data.wins;
+              pieData[1].value = data.Losses;
+              pieData[2].value = data.ties;
+              //skillsChart.segments[0].value = data.wins;
+              //skillsChart.segments[1].value = data.Losses;
+              //skillsChart.segments[2].value = data.ties;
 
               console.log(pieData);
 
@@ -200,6 +205,9 @@
 
             });
             $("#thing").load("/api/stats/"+input)
+
+            var context = document.getElementById('script_stats').getContext('2d');
+            skillsChart = new Chart(context).Pie(pieData);
         }
 
 
