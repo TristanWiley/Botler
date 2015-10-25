@@ -6,6 +6,7 @@ import os
 import json
 import re
 import random
+import subprocess
 
 app = Flask(__name__, static_url_path='/static')
 #socketio = SocketIO(app)
@@ -39,8 +40,10 @@ def render_stats():
 
 @app.route('/api/stats/<name>')
 def get_stats(name):
-    with open(path.join(DATA_PATH, name + ".json")) as f:
-        return Response(response=f.read(), status=200, mimetype="application/json")
+    for file_name in listdir(DATA_PATH):#get a list of strings of all files
+        if name in file_name:#if name searched in 
+            with open(DATA_PATH+'/'+file_name) as f:
+                return Response(response=f.read(), status=200, mimetype="application/json")
 
 
 @app.route('/api/stats/fake')
@@ -84,7 +87,6 @@ def get_game_stats(name):
     # x should be an svg or something
     # facilitator.on_data(lambda x: emit('frame', {'frame': x}))
 #    pass
-
 # ffrdc
 
 
@@ -101,6 +103,9 @@ def script_upload():
             f.seek(0)
             f.truncate(0)
             f.write(code)
+
+        with open(os.path.join(app.config['UPLOAD_FOLDER'], filename[:-3]+".json"), 'a+') as g:
+            g.write('{"wins":0,"losses":0,"ties":0}')
 
         return redirect('/')
 

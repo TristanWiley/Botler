@@ -8,11 +8,12 @@ import json
 
 class Engine:
 
-    def __init__(self):
+    def __init__(self, game):
     
         self.proc = subprocess.Popen('game-engines/build_and_run.sh',
                                      stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE)
+        print self.proc
 
     def read(self):
         try:

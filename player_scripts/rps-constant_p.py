@@ -1,2 +1,3 @@
-def main(percept):
-    return "p"
+def main(percept):
+    return "p"
+                            

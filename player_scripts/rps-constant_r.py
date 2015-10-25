@@ -1,2 +1,2 @@
-def main(percept):
+def main(percept):
     return 'r'

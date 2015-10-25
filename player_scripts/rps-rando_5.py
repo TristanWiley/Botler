@@ -1,3 +1,3 @@
-from random import choice
-def main(data):
+from random import choice
+def main(data):
     return choice(data['valid_moves'])
