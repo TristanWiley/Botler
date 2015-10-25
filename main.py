@@ -44,7 +44,7 @@ def get_stats(name):
         if name in file_name:#if name searched in 
             with open(DATA_PATH+'/'+file_name) as f:
                 return Response(response=f.read(), status=200, mimetype="application/json")
-
+    return Response(response="{}", status=200, mimetype="application/json")
 
 @app.route('/api/stats/fake')
 def fake_stats():
