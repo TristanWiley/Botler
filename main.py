@@ -47,10 +47,10 @@ def get_stats(name):
     return Response(response="{}", status=200, mimetype="application/json")
 
 
-@app.route('/api/stats/bots')
+@app.route('/api/gamestats/bots')
 def get_num_bots():
     num_bots = len(listdir(DATA_PATH))
-    return Response(response=num_bots, status=200, mimetype="application/json")
+    return Response(response=str(num_bots), status=200)
 
 
 
